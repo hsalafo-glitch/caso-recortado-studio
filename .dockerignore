@@ -1,0 +1,10 @@
+.env
+*.sqlite3*
+.secret_key
+__pycache__/
+salida/
+cache_audio/
+web/casos/
+web/generados/
+web/logs/
+.git

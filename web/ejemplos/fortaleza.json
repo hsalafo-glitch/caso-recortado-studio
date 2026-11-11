@@ -1,0 +1,179 @@
+{
+ "titulo": [
+  "UN TÚNEL",
+  "BAJO EL BANCO",
+  "¡3 TONELADAS!"
+ ],
+ "mapa": [
+  "BRA",
+  "FORTALEZA",
+  -38.52,
+  -3.73
+ ],
+ "bloques": [
+  [
+   "¿Y si te dijera que unos ladrones abrieron una empresa de césped artificial… solo para robar un banco?",
+   [
+    [
+     null,
+     "icono",
+     {
+      "ico": "edificio",
+      "st": [
+       "robar",
+       "¿UN BANCO?"
+      ]
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "UNA EMPRESA FALSA"
+    ]
+   ],
+   {
+    "robar": "robar un banco"
+   }
+  ],
+  [
+   "Fortaleza, Brasil, agosto de 2005. Alquilan una casa a pocas calles del Banco Central y, durante meses, cavan un túnel de casi ochenta metros.",
+   [
+    [
+     null,
+     "icono",
+     {
+      "ico": "edificio"
+     }
+    ],
+    [
+     "cavan un",
+     "icono",
+     {
+      "ico": "taladro",
+      "st": [
+       "metros",
+       "≈ 80 METROS"
+      ]
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "BRASIL, 2005"
+    ],
+    [
+     "cavan",
+     "UN TÚNEL SECRETO"
+    ]
+   ],
+   {
+    "metros": "ochenta metros"
+   }
+  ],
+  [
+   "La tierra la sacaban en furgonetas, disimulada como si fuera parte del negocio. Los vecinos no sospecharon nada.",
+   [
+    [
+     null,
+     "icono",
+     {
+      "ico": "camion"
+     }
+    ],
+    [
+     "Los vecinos",
+     "siluetas",
+     {
+      "n": 3
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "LA TIERRA, EN FURGONETAS"
+    ],
+    [
+     "Los vecinos",
+     "NADIE SOSPECHÓ"
+    ]
+   ],
+   {}
+  ],
+  [
+   "Un fin de semana llegaron a la cámara acorazada y se llevaron unos ciento sesenta millones de reales: más de tres toneladas de billetes.",
+   [
+    [
+     null,
+     "contador",
+     {
+      "ico": "billetes",
+      "valor": 160.0,
+      "u": "MILLONES DE REALES"
+     }
+    ],
+    [
+     "más de",
+     "icono",
+     {
+      "ico": "saco",
+      "st": [
+       "toneladas",
+       "¡+3 TONELADAS!"
+      ]
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "LA CÁMARA ACORAZADA"
+    ],
+    [
+     "más de",
+     "3 TONELADAS DE BILLETES"
+    ]
+   ],
+   {
+    "toneladas": "tres toneladas"
+   }
+  ],
+  [
+   "Detuvieron a muchos de ellos, pero gran parte del dinero nunca apareció. ¿Tú habrías sospechado de la tienda de césped?",
+   [
+    [
+     null,
+     "siluetas",
+     {
+      "n": 3,
+      "cada": "DETENIDO"
+     }
+    ],
+    [
+     "Tú habrías",
+     "pregunta",
+     {
+      "ico": "lupa"
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "¿Y EL DINERO?"
+    ],
+    [
+     "Tú habrías",
+     "¿TÚ LO HABRÍAS VISTO?"
+    ]
+   ],
+   {}
+  ]
+ ],
+ "pron": {},
+ "titulo_youtube": "Cavaron un túnel hasta el banco… y se llevaron 3 toneladas de billetes",
+ "descripcion": "Fortaleza, Brasil, 2005: una falsa empresa de césped escondía un túnel hasta la cámara del Banco Central. ¿Lo habrías descubierto? #truecrime #casoreal #brasil #robo #shorts",
+ "slug": "tunel-fortaleza"
+}

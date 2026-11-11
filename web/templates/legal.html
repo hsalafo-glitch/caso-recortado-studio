@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ {"aviso": "Aviso legal", "privacidad": "Política de privacidad", "condiciones": "Condiciones de uso"}[doc] }} · Caso Recortado Studio</title>
+<link rel="stylesheet" href="/static/web.css">
+</head>
+<body>
+{% macro d(valor, hueco, si_vacio=None) %}{% if valor %}{{ valor }}{% elif si_vacio and legal.titular %}{{ si_vacio }}{% else %}<mark>{{ hueco }}</mark>{% endif %}{% endmacro %}
+{% include "_cabecera.html" %}
+<main class="contenedor"><article class="legal">
+{% if not (legal.titular and legal.nif and legal.domicilio and legal.email) %}<div class="borrador"><b>Borrador.</b> Este texto es un punto de partida y no está revisado por un profesional. Antes de abrir la web
+al público, complétalo (las partes <mark>resaltadas</mark>: se rellenan con las variables CR_TITULAR, CR_NIF, CR_DOMICILIO y
+CR_EMAIL_CONTACTO de la configuración) y revísalo con un gestor o un abogado.</div>{% endif %}
+
+{% if doc == "aviso" %}
+<h1>Aviso legal</h1>
+<p>En cumplimiento de la Ley 34/2002, de servicios de la sociedad de la información y de comercio electrónico (LSSI-CE):</p>
+<h2>Titular</h2>
+<ul>
+  <li>Nombre o razón social: {{ d(legal.titular, "[tu nombre completo o el de tu empresa]") }}</li>
+  <li>NIF/CIF: {{ d(legal.nif, "[NIF]") }}</li>
+  <li>Domicilio: {{ d(legal.domicilio, "[dirección completa]") }}</li>
+  <li>Email de contacto: {{ d(legal.email, "[email]") }}</li>
+  <li>Datos registrales (solo empresas): {{ d(legal.registro, "[Registro Mercantil, tomo, folio, hoja]", "no aplica") }}</li>
+</ul>
+<h2>Objeto</h2>
+<p>Esta web ofrece una herramienta para crear vídeos cortos animados a partir de un tema escrito por el usuario.</p>
+<h2>Propiedad intelectual</h2>
+<p>El diseño de la web, el código, los dibujos y la marca «Caso Recortado Studio» pertenecen al titular. Los derechos sobre los
+vídeos que crea cada usuario se regulan en las <a href="/condiciones">condiciones de uso</a>.</p>
+<h2>Responsabilidad</h2>
+<p>Los guiones se generan de forma automática. El titular no garantiza que los datos sean exactos y recomienda revisar cada
+vídeo antes de publicarlo.</p>
+
+{% elif doc == "privacidad" %}
+<h1>Política de privacidad</h1>
+<h2>Responsable</h2>
+<p>{{ d(legal.titular, "[tu nombre o empresa]") }}, NIF {{ d(legal.nif, "[NIF]") }}, {{ d(legal.domicilio, "[dirección]") }}. Contacto: {{ d(legal.email, "[email]") }}.</p>
+<h2>Qué datos tratamos y para qué</h2>
+<ul>
+  <li><b>Cuenta:</b> tu email y tu contraseña (guardada cifrada), para que puedas entrar y ver tus vídeos.</li>
+  <li><b>Vídeos:</b> los temas que escribes y los vídeos generados, para prestarte el servicio.</li>
+  <li><b>Pagos:</b> si contratas un plan, Stripe gestiona el cobro. Nosotros no vemos ni guardamos los datos de tu tarjeta.</li>
+  <li><b>Lista de espera:</b> si te apuntas, tu email, tu canal (si lo indicas) y tu respuesta sobre el precio, solo para avisarte
+    cuando abramos. Te puedes dar de baja escribiéndonos y lo borramos.</li>
+  <li><b>Recuperar contraseña:</b> usamos tu email para enviarte el enlace; el enlace caduca en una hora.</li>
+</ul>
+<p>Base legal: la ejecución del contrato que aceptas al crear la cuenta (art. 6.1.b del RGPD).</p>
+<h2>Con quién se comparten</h2>
+<ul>
+  <li><b>Anthropic</b> (Estados Unidos): el tema que escribes se envía a su IA para generar el guion.</li>
+  <li><b>Stripe</b> (Irlanda/Estados Unidos): pagos y facturación.</li>
+  <li><b>Servicio de email</b> ({{ d(legal.proveedor_email, "[p. ej. Brevo, Francia]") }}): solo para enviarte los emails de la cuenta.</li>
+  <li><b>Proveedor de alojamiento:</b> {{ d(legal.hosting, "[nombre del proveedor y país]") }}.</li>
+</ul>
+<p>Las transferencias fuera del Espacio Económico Europeo se hacen con las garantías que ofrecen estos proveedores
+(<mark>[revisar: cláusulas contractuales tipo o Marco de Privacidad de Datos UE-EE. UU.]</mark>).</p>
+<h2>Cuánto tiempo</h2>
+<p>Mientras tengas la cuenta. Puedes borrarla tú mismo en «Mi cuenta»: tus datos y vídeos se eliminan en ese momento,
+salvo los datos de facturación que la ley obliga a conservar.</p>
+<h2>Tus derechos</h2>
+<p>Puedes pedir acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a {{ d(legal.email, "[email]") }}. También
+puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
+<h2>Cookies</h2>
+<p>Solo usamos una cookie técnica para mantener tu sesión abierta. No usamos cookies de publicidad ni de analítica.
+Las fuentes tipográficas se sirven desde nuestro propio servidor: tu navegador no se conecta a servicios de terceros
+al abrir la web (salvo Stripe, solo en la página de pago).</p>
+
+{% else %}
+<h1>Condiciones de uso</h1>
+<h2>El servicio</h2>
+<p>Caso Recortado Studio crea vídeos cortos animados a partir de un tema. Los guiones, la voz y la animación se generan de forma
+automática y pueden contener errores: revisa cada vídeo antes de publicarlo.</p>
+<h2>Planes y pagos</h2>
+<ul>
+  <li><b>Gratis:</b> {{ planes.gratis.videos }} vídeos al mes, con marca de agua.</li>
+  <li><b>Creador:</b> {{ planes.creador.precio }}, {{ planes.creador.videos }} vídeos al mes, sin marca de agua.</li>
+  <li><b>Pro:</b> {{ planes.pro.precio }}, {{ planes.pro.videos }} vídeos al mes, sin marca de agua.</li>
+</ul>
+<p>Los planes de pago se renuevan cada mes hasta que los canceles. Puedes cancelar en cualquier momento desde «Gestionar
+suscripción»: el plan sigue activo hasta el final del mes pagado. Los vídeos que no se usan en un mes no se acumulan. Si un vídeo
+falla, no cuenta.</p>
+<p>Precios con impuestos: <mark>[confirmar con tu gestor si el precio incluye el IVA y cómo se factura]</mark>.</p>
+<h2>Derecho de desistimiento</h2>
+<p><mark>[Revisar con un profesional.]</mark> Como consumidor tienes 14 días para desistir de la suscripción. Al empezar a crear
+vídeos aceptas que el servicio empiece de inmediato, lo que puede afectar a ese derecho según la ley de consumidores.</p>
+<h2>Tus vídeos</h2>
+<p>Puedes usar los vídeos que creas, también con fines comerciales. Tú eres responsable de lo que publicas con ellos.</p>
+<h2>Uso aceptable</h2>
+<p>No está permitido crear vídeos sobre personas privadas o menores, ni con contenido sexual, de odio o violencia explícita,
+instrucciones peligrosas, acusaciones falsas o desinformación. Podemos rechazar un tema y cerrar las cuentas que lo incumplan.</p>
+<h2>Cambios y contacto</h2>
+<p>Si cambiamos estas condiciones, te avisaremos por email. Para cualquier duda: {{ d(legal.email, "[email]") }}. Ley aplicable: española.</p>
+{% endif %}
+</article></main>
+{% include "_pie.html" %}
+</body>
+</html>

@@ -1,0 +1,193 @@
+{
+ "titulo": [
+  "LOS FLAMENCOS",
+  "NACEN GRISES",
+  "¿POR QUÉ SON ROSAS?"
+ ],
+ "mapa": null,
+ "bloques": [
+  [
+   "¿Sabías que los flamencos no nacen rosas? Las crías salen del huevo de color gris.",
+   [
+    [
+     null,
+     "icono",
+     {
+      "ico": "zancuda",
+      "dia": true,
+      "st": [
+       "gris",
+       "¡GRISES!"
+      ]
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "¿NACEN ROSAS?"
+    ],
+    [
+     "Las crías",
+     "LAS CRÍAS: GRISES"
+    ]
+   ],
+   {
+    "gris": "color gris"
+   }
+  ],
+  [
+   "Su color no viene de los genes. Viene de lo que comen: pequeños crustáceos y algas llenos de unos pigmentos llamados carotenoides.",
+   [
+    [
+     null,
+     "comparar",
+     {
+      "ico": "adn",
+      "ico2": "pez",
+      "label": "GENES",
+      "label2": "COMIDA",
+      "dia": true,
+      "st": [
+       "comen",
+       "¡LA COMIDA!"
+      ]
+     }
+    ],
+    [
+     "pequeños crustáceos",
+     "icono",
+     {
+      "ico": "gota",
+      "label": "CAROTENOIDES",
+      "dia": true
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "NO SON LOS GENES"
+    ],
+    [
+     "pequeños crustáceos",
+     "CRUSTÁCEOS Y ALGAS"
+    ]
+   ],
+   {
+    "comen": "lo que comen"
+   }
+  ],
+  [
+   "Es el mismo pigmento que da color a la zanahoria. El cuerpo del flamenco lo transforma y lo deposita en sus plumas.",
+   [
+    [
+     null,
+     "proceso",
+     {
+      "ico": "pez",
+      "ico2": "corazon",
+      "ico3": "zancuda",
+      "label": "COMIDA → CUERPO → PLUMAS",
+      "dia": true
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "EL PIGMENTO DE LA ZANAHORIA"
+    ],
+    [
+     "lo deposita",
+     "VA A LAS PLUMAS"
+    ]
+   ],
+   {}
+  ],
+  [
+   "Por eso, cuanto mejor comen, más intenso es su rosa. Y si les falta ese alimento, con el tiempo se van volviendo blancos.",
+   [
+    [
+     null,
+     "icono",
+     {
+      "ico": "sube",
+      "label": "MÁS COMIDA = MÁS ROSA",
+      "dia": true
+     }
+    ],
+    [
+     "si les",
+     "comparar",
+     {
+      "ico": "zancuda",
+      "ico2": "triste",
+      "label": "BIEN COMIDO",
+      "label2": "SIN PIGMENTO",
+      "dia": true,
+      "st": [
+       "blancos",
+       "¡BLANCOS!"
+      ]
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "MEJOR DIETA, MÁS ROSA"
+    ],
+    [
+     "si les",
+     "SIN ESE ALIMENTO…"
+    ]
+   ],
+   {
+    "blancos": "volviendo blancos"
+   }
+  ],
+  [
+   "Literalmente, un flamenco es lo que come. ¿Qué otro animal crees que cambia de color por su comida?",
+   [
+    [
+     null,
+     "icono",
+     {
+      "ico": "zancuda",
+      "dia": true,
+      "st": [
+       "come",
+       "ES LO QUE COME"
+      ]
+     }
+    ],
+    [
+     "Qué otro",
+     "pregunta",
+     {
+      "ico": "huella",
+      "dia": true
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "ERES LO QUE COMES"
+    ],
+    [
+     "Qué otro",
+     "¿QUÉ OTRO ANIMAL?"
+    ]
+   ],
+   {
+    "come": "lo que come"
+   }
+  ]
+ ],
+ "pron": {},
+ "titulo_youtube": "Los flamencos nacen grises… entonces, ¿por qué son rosas?",
+ "descripcion": "El color de los flamencos no viene de sus genes, sino de lo que comen. ¿Lo sabías? #curiosidades #animales #ciencia #naturaleza #shorts",
+ "slug": "flamencos-rosas"
+}

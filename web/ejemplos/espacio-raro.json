@@ -1,0 +1,197 @@
+{
+ "titulo": [
+  "EN VENUS",
+  "UN DÍA DURA MÁS",
+  "QUE UN AÑO"
+ ],
+ "mapa": null,
+ "bloques": [
+  [
+   "¿Sabías que en Venus un día dura más que un año? Parece un error, pero es real.",
+   [
+    [
+     null,
+     "icono",
+     {
+      "ico": "planeta",
+      "noche": true,
+      "entrada": "zoom",
+      "movimiento": "balancea",
+      "st": [
+       "anio",
+       "¡DÍA > AÑO!"
+      ]
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "UN DÍA EN VENUS…"
+    ],
+    [
+     "Parece un",
+     "Y ES REAL"
+    ]
+   ],
+   {
+    "anio": "un año"
+   }
+  ],
+  [
+   "Venus tarda unos 243 días en girar sobre sí mismo, pero solo 225 en dar la vuelta completa al Sol.",
+   [
+    [
+     null,
+     "barras",
+     {
+      "u": "días",
+      "camara": "acercar",
+      "items": [
+       {
+        "texto": "UN DÍA",
+        "valor": 243.0
+       },
+       {
+        "texto": "UN AÑO",
+        "valor": 225.0
+       }
+      ]
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "GIRA MUY DESPACIO"
+    ],
+    [
+     "pero solo",
+     "EL AÑO ES MÁS CORTO"
+    ]
+   ],
+   {}
+  ],
+  [
+   "Y hay más: en el espacio no hay sonido, las huellas de la Luna pueden durar millones de años y una cucharada de estrella de neutrones pesa miles de millones de toneladas.",
+   [
+    [
+     null,
+     "lista",
+     {
+      "noche": true,
+      "entrada": "desliza",
+      "sacudida": "pesa",
+      "items": [
+       {
+        "texto": "NO HAY SONIDO",
+        "ico": "senal"
+       },
+       {
+        "texto": "HUELLAS ETERNAS",
+        "ico": "huella"
+       },
+       {
+        "texto": "ESTRELLAS PESADÍSIMAS",
+        "ico": "estrella"
+       }
+      ]
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "Y HAY MÁS RAREZAS"
+    ],
+    [
+     "una cucharada",
+     "UNA CUCHARADA = MONTAÑAS"
+    ]
+   ],
+   {
+    "pesa": "pesa miles"
+   }
+  ],
+  [
+   "Y todo esto lo hemos descubierto hace muy poco: el primer satélite llegó en 1957, el primer humano en 1961 y la Luna en 1969.",
+   [
+    [
+     null,
+     "linea",
+     {
+      "movimiento": "flota",
+      "items": [
+       {
+        "texto": "1957",
+        "ico": "satelite"
+       },
+       {
+        "texto": "1961",
+        "ico": "cohete"
+       },
+       {
+        "texto": "1969",
+        "ico": "luna"
+       }
+      ]
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "HACE MUY POCO"
+    ],
+    [
+     "y la Luna",
+     "1969: LA LUNA"
+    ]
+   ],
+   {}
+  ],
+  [
+   "Literalmente, el universo es más raro que la ficción. ¿Cuál de estos datos te ha volado la cabeza?",
+   [
+    [
+     null,
+     "comparar",
+     {
+      "ico": "tierra",
+      "ico2": "planeta",
+      "label": "LO QUE CREEMOS",
+      "label2": "LA REALIDAD",
+      "noche": true,
+      "entrada": "cae"
+     }
+    ],
+    [
+     "Cuál de",
+     "pregunta",
+     {
+      "ico": "cerebro",
+      "movimiento": "tiembla",
+      "sacudida": "volado"
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "MÁS RARO QUE LA FICCIÓN"
+    ],
+    [
+     "Cuál de",
+     "¿CUÁL TE SORPRENDIÓ?"
+    ]
+   ],
+   {
+    "volado": "volado la"
+   }
+  ]
+ ],
+ "pron": {},
+ "titulo_youtube": "En Venus un día dura más que un año (y otras rarezas del espacio)",
+ "descripcion": "Datos reales del espacio que parecen inventados. ¿Cuál te ha sorprendido más? #espacio #ciencia #curiosidades #astronomia #shorts",
+ "slug": "espacio-raro"
+}

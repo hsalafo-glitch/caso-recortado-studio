@@ -1,0 +1,27 @@
+<nav class="nav" aria-label="Principal">
+  <div class="contenedor">
+    <a class="marca" href="/"><i aria-hidden="true">✂</i>Caso Recortado <span>Studio</span></a>
+    {% if solo_lista %}<div class="enlaces"></div>{% if usuario %}<a class="plan-chip" href="/cuenta" style="text-decoration:none">Mi cuenta</a>
+      <form method="post" action="/salir" style="margin:0"><input type="hidden" name="csrf" value="{{ csrf() }}"><button class="salir" type="submit">Salir</button></form>{% endif %}
+    {% else %}
+    <div class="enlaces">
+      <a href="/#estilos">Estilos</a>
+      <a href="/#como">Cómo funciona</a>
+      <a href="/#precios">Precios</a>
+      <a href="/#faq">Preguntas</a>
+    </div>
+    {% if demo %}<span class="demo">Modo demo</span>{% endif %}
+    {% if usuario %}
+      <a class="plan-chip" href="/cuenta" title="Mi cuenta · {{ usuario.email }}" style="text-decoration:none">Plan {{ plan.nombre }} · Mi cuenta</a>
+      <form method="post" action="/salir" style="margin:0"><input type="hidden" name="csrf" value="{{ csrf() }}"><button class="salir" type="submit">Salir</button></form>
+      <a class="btn btn-primario" href="/#crear-sec">Crear vídeo</a>
+    {% else %}
+      <a class="enlace-entrar" href="/entrar" style="text-decoration:none;color:var(--suave);font-weight:600;font-size:15px;white-space:nowrap">Entrar</a>
+      <a class="btn btn-primario" href="/registro">Empezar gratis</a>
+    {% endif %}
+    {% endif %}
+  </div>
+</nav>
+{% with mensajes = get_flashed_messages() %}{% if mensajes %}
+<div class="flash" role="alert">{% for m in mensajes %}<div>{{ m }}</div>{% endfor %}</div>
+{% endif %}{% endwith %}

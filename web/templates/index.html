@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caso Recortado Studio · Shorts animados con IA</title>
+<meta name="description" content="Escribe un tema y recibe un short vertical animado con voz en off, subtítulos y 10 estilos visuales. Listo para TikTok, Reels y YouTube Shorts.">
+<link rel="stylesheet" href="/static/web.css">
+</head>
+<body>
+
+{% include "_cabecera.html" %}
+
+<header class="hero">
+  <div class="contenedor">
+    <div>
+      <span class="pildora"><b>●</b> Nuevo: 10 estilos de animación</span>
+      <h1>De una idea a un <em>short animado</em> en minutos</h1>
+      <p class="lead">Escribe un tema y la IA escribe el guion, pone la voz, anima las escenas y añade subtítulos. Recibes un vídeo vertical listo para TikTok, Reels y YouTube Shorts.</p>
+      <div class="cta">
+        <a class="btn btn-primario" href="{{ '#crear-sec' if usuario else '/registro' }}">Crear mi primer vídeo</a>
+        <a class="btn btn-sec" href="#estilos">Ver los estilos</a>
+      </div>
+      <div class="confianza">
+        <div><svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M8.1 13.6 4.6 10l-1.2 1.2 4.7 4.7 9-9-1.2-1.2z"/></svg>Sin saber editar</div>
+        <div><svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M8.1 13.6 4.6 10l-1.2 1.2 4.7 4.7 9-9-1.2-1.2z"/></svg>Voz en off y subtítulos</div>
+        <div><svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M8.1 13.6 4.6 10l-1.2 1.2 4.7 4.7 9-9-1.2-1.2z"/></svg>1080×1920, hasta 59 s</div>
+      </div>
+    </div>
+    <div style="position:relative;justify-self:center">
+      <div class="movil">
+        <video src="/static/demo.mp4" poster="/static/demo.jpg" autoplay muted loop playsinline aria-label="Ejemplo: el mismo short en 10 estilos"></video>
+      </div>
+      <div class="etiqueta-flot a"><span class="punto"></span>Guion escrito por IA</div>
+      <div class="etiqueta-flot b">🎙️ Voz + subtítulos</div>
+    </div>
+  </div>
+</header>
+
+<section id="crear-sec" aria-labelledby="crear-titulo">
+  <div class="contenedor">
+    <div class="titulo-sec">
+      <small>Crea tu vídeo</small>
+      <h2 id="crear-titulo">Cuatro decisiones y listo</h2>
+      <p>Elige el tema, el estilo, cuánto se mueve y la voz. Revisas el guion y nosotros hacemos el resto.</p>
+    </div>
+
+    <div class="creador">
+      <div>
+        <div class="bloque">
+          <p class="paso"><b>1</b><label for="tema">¿De qué quieres el vídeo?</label></p>
+          <div class="entrada">
+            <input id="tema" type="text" maxlength="200" placeholder="Ej.: cómo se construyeron las pirámides" autocomplete="off">
+          </div>
+          <div class="ideas" id="ideas" aria-label="Ideas">
+            <button type="button">Por qué los flamencos son rosas</button>
+            <button type="button">El robo del Banco Central de Fortaleza</button>
+            <button type="button">¿Qué pasaría si la Luna desapareciera?</button>
+          </div>
+        </div>
+
+        <div class="bloque">
+          <p class="paso"><b>2</b>Estilo del vídeo</p>
+          <div class="rejilla" role="radiogroup" aria-label="Estilo visual">
+            <label><input type="radio" name="visual" value="recortes" checked><img src="/static/estilo-recortes.jpg" alt="">Papel</label>
+            <label><input type="radio" name="visual" value="palitos"><img src="/static/estilo-palitos.jpg" alt="">Palitos</label>
+            <label><input type="radio" name="visual" value="3d"><img src="/static/estilo-3d.jpg" alt="">3D</label>
+            <label><input type="radio" name="visual" value="plano"><img src="/static/estilo-plano.jpg" alt="">Plano</label>
+            <label><input type="radio" name="visual" value="neon"><img src="/static/estilo-neon.jpg" alt="">Neón</label>
+            <label><input type="radio" name="visual" value="holograma"><img src="/static/estilo-holograma.jpg" alt="">Holograma</label>
+            <label><input type="radio" name="visual" value="plastilina"><img src="/static/estilo-plastilina.jpg" alt="">Plastilina</label>
+            <label><input type="radio" name="visual" value="pixel"><img src="/static/estilo-pixel.jpg" alt="">Pixel art</label>
+            <label><input type="radio" name="visual" value="acuarela"><img src="/static/estilo-acuarela.jpg" alt="">Acuarela</label>
+            <label><input type="radio" name="visual" value="comic"><img src="/static/estilo-comic.jpg" alt="">Cómic</label>
+          </div>
+        </div>
+
+        <div class="bloque">
+          <p class="paso"><b>3</b>Movimiento</p>
+          <div class="segmentos" role="radiogroup" aria-label="Cantidad de movimiento">
+            <label><input type="radio" name="estilo" value="tranquilo">Tranquilo</label>
+            <label><input type="radio" name="estilo" value="equilibrado" checked>Equilibrado</label>
+            <label><input type="radio" name="estilo" value="muy animado">Mucho movimiento</label>
+          </div>
+        </div>
+
+        <div class="bloque">
+          <p class="paso"><b>4</b>Voz</p>
+          <div class="segmentos" role="radiogroup" aria-label="Voz">
+            {% for clave, nombre in voces.items() %}
+            <label><input type="radio" name="voz" value="{{ clave }}" {{ "checked" if loop.first }}>{{ nombre }}</label>
+            {% endfor %}
+          </div>
+          <div class="ideas" style="margin-top:10px" aria-label="Escuchar las voces">
+            {% for clave, nombre in voces.items() %}
+            <button type="button" data-escuchar="{{ clave }}">▶ {{ nombre }}</button>
+            {% endfor %}
+          </div>
+          <label class="casilla" style="margin-top:14px"><input type="checkbox" id="revisar" checked>
+            <span>Quiero leer y corregir el guion antes de crear el vídeo</span></label>
+        </div>
+
+        <div class="pie-creador">
+          {% if usuario %}
+          <button id="crear" class="btn btn-primario" type="button">Crear vídeo</button>
+          <div class="uso" id="uso">
+            <span>Este mes: <b id="uso-n">{{ usados }}</b> de <b id="uso-l">{{ limite }}</b> vídeos · plan {{ plan.nombre }}</span>
+            <div class="barra"><div id="uso-barra" style="width:{{ (100 * usados / limite) | round | int if limite else 0 }}%"></div></div>
+            {% if usuario.plan == "gratis" %}<a href="#precios">Quitar la marca de agua</a>{% endif %}
+          </div>
+          {% else %}
+          <a id="crear" class="btn btn-primario" href="/registro">Crear cuenta gratis para empezar</a>
+          <p class="aviso">{{ planes.gratis.videos }} vídeos gratis al mes. El guion sale en segundos y el vídeo en pocos minutos.</p>
+          {% endif %}
+        </div>
+        <div class="error" id="error" role="alert"></div>
+      </div>
+
+      <aside class="vista" aria-label="Vista previa del estilo">
+        <div class="movil"><img id="vista-img" src="/static/vertical-recortes.jpg" alt=""></div>
+        <p>Estilo: <strong id="vista-nombre">Papel</strong></p>
+      </aside>
+    </div>
+
+    {% if usuario %}
+    <div style="margin-top:56px">
+      <div class="cabecera-lista"><h2>Tus vídeos</h2></div>
+      <div id="lista"><div class="vacio">Aún no has creado ningún vídeo. Escribe un tema arriba para empezar.</div></div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section id="estilos" aria-labelledby="estilos-titulo" style="background:var(--bg2);border-block:1px solid var(--borde)">
+  <div class="contenedor">
+    <div class="titulo-sec">
+      <small>10 estilos</small>
+      <h2 id="estilos-titulo">El mismo guion, el aspecto que tú quieras</h2>
+      <p>Cambia el estilo con un clic: la historia, la voz y los subtítulos se mantienen.</p>
+    </div>
+    <div class="galeria">
+      <figure><img src="/static/estilo-recortes.jpg" alt="Estilo papel" loading="lazy"><figcaption>Papel<span>Recortes con textura</span></figcaption></figure>
+      <figure><img src="/static/estilo-palitos.jpg" alt="Estilo palitos" loading="lazy"><figcaption>Palitos<span>Pizarra a mano</span></figcaption></figure>
+      <figure><img src="/static/estilo-3d.jpg" alt="Estilo 3D" loading="lazy"><figcaption>3D<span>Volumen y brillo</span></figcaption></figure>
+      <figure><img src="/static/estilo-plano.jpg" alt="Estilo plano" loading="lazy"><figcaption>Plano<span>Motion graphics</span></figcaption></figure>
+      <figure><img src="/static/estilo-neon.jpg" alt="Estilo neón" loading="lazy"><figcaption>Neón<span>Luz sobre negro</span></figcaption></figure>
+      <figure><img src="/static/estilo-holograma.jpg" alt="Estilo holograma" loading="lazy"><figcaption>Holograma<span>Proyección futurista</span></figcaption></figure>
+      <figure><img src="/static/estilo-plastilina.jpg" alt="Estilo plastilina" loading="lazy"><figcaption>Plastilina<span>Formas blandas</span></figcaption></figure>
+      <figure><img src="/static/estilo-pixel.jpg" alt="Estilo pixel art" loading="lazy"><figcaption>Pixel art<span>Videojuego retro</span></figcaption></figure>
+      <figure><img src="/static/estilo-acuarela.jpg" alt="Estilo acuarela" loading="lazy"><figcaption>Acuarela<span>Pintado a mano</span></figcaption></figure>
+      <figure><img src="/static/estilo-comic.jpg" alt="Estilo cómic" loading="lazy"><figcaption>Cómic<span>Tinta y tramas</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="como" aria-labelledby="como-titulo">
+  <div class="contenedor">
+    <div class="titulo-sec">
+      <small>Cómo funciona</small>
+      <h2 id="como-titulo">El trabajo de un editor, en un minuto tuyo</h2>
+    </div>
+    <div class="tres">
+      <div class="tarjeta"><div class="num">1</div><h3>Escribe un tema</h3><p>Un caso real, un dato curioso, una pregunta… La IA escribe un guion con gancho, ritmo y un cierre que invita a comentar.</p></div>
+      <div class="tarjeta"><div class="num">2</div><h3>Elige el estilo</h3><p>Diez estilos visuales y tres niveles de movimiento. Cada escena se anima según lo que dice la voz.</p></div>
+      <div class="tarjeta"><div class="num">3</div><h3>Descarga y publica</h3><p>Recibes el vídeo, la miniatura, el título y la descripción con hashtags, listos para copiar y pegar.</p></div>
+    </div>
+    <div class="incluye">
+      <div><b>Voz en off</b>Narración en español</div>
+      <div><b>Subtítulos</b>Palabra a palabra, sincronizados</div>
+      <div><b>Mapa</b>Zoom al país cuando hay un lugar</div>
+      <div><b>Miniatura</b>Portada con título incluida</div>
+    </div>
+  </div>
+</section>
+
+<section id="precios" aria-labelledby="precios-titulo" style="background:var(--bg2);border-block:1px solid var(--borde)">
+  <div class="contenedor">
+    <div class="titulo-sec">
+      <small>Precios</small>
+      <h2 id="precios-titulo">Empieza gratis. Crece cuando quieras.</h2>
+      <p>Sin permanencia. Cancela cuando quieras.</p>
+    </div>
+    <div class="planes">
+      <div class="plan">
+        <h3>Gratis</h3>
+        <div class="precio">0 €</div>
+        <p class="sub">Para probar</p>
+        <ul><li>{{ planes.gratis.videos }} vídeos al mes</li><li>Los 10 estilos</li><li>Con marca de agua</li></ul>
+        {% if usuario %}<span class="btn btn-sec" aria-disabled="true">{{ "Tu plan actual" if usuario.plan == "gratis" else "Incluido" }}</span>
+        {% else %}<a class="btn btn-sec" href="/registro">Empezar gratis</a>{% endif %}
+      </div>
+      <div class="plan destacado">
+        <h3>Creador</h3>
+        <div class="precio">{{ planes.creador.precio.split("/")[0] }} <small>/mes</small></div>
+        <p class="sub">Para publicar a diario</p>
+        <ul><li>{{ planes.creador.videos }} vídeos al mes</li><li>Sin marca de agua</li><li>Los 10 estilos</li><li>Cancela cuando quieras</li></ul>
+        {% if usuario and usuario.plan == "creador" %}
+          {% if pagos_activos and usuario.stripe_cliente %}<form method="post" action="/pago/portal" style="margin-top:auto"><input type="hidden" name="csrf" value="{{ csrf() }}"><button class="btn btn-sec" type="submit" style="width:100%">Tu plan · Gestionar suscripción</button></form>
+          {% else %}<span class="btn btn-sec" aria-disabled="true">Tu plan actual</span>{% endif %}
+        {% elif pagos_activos and usuario %}<form method="post" action="/pago/creador" style="margin-top:auto"><input type="hidden" name="csrf" value="{{ csrf() }}"><button class="btn btn-primario" type="submit" style="width:100%">Elegir Creador</button></form>
+        {% elif pagos_activos %}<a class="btn btn-primario" href="/registro">Elegir Creador</a>
+        {% else %}<button class="btn btn-primario" type="button" disabled>Próximamente</button>{% endif %}
+      </div>
+      <div class="plan">
+        <h3>Pro</h3>
+        <div class="precio">{{ planes.pro.precio.split("/")[0] }} <small>/mes</small></div>
+        <p class="sub">Para agencias y canales</p>
+        <ul><li>{{ planes.pro.videos }} vídeos al mes</li><li>Sin marca de agua</li><li>Los 10 estilos</li><li>Soporte por email</li></ul>
+        {% if usuario and usuario.plan == "pro" %}
+          {% if pagos_activos and usuario.stripe_cliente %}<form method="post" action="/pago/portal" style="margin-top:auto"><input type="hidden" name="csrf" value="{{ csrf() }}"><button class="btn btn-sec" type="submit" style="width:100%">Tu plan · Gestionar suscripción</button></form>
+          {% else %}<span class="btn btn-sec" aria-disabled="true">Tu plan actual</span>{% endif %}
+        {% elif pagos_activos and usuario %}<form method="post" action="/pago/pro" style="margin-top:auto"><input type="hidden" name="csrf" value="{{ csrf() }}"><button class="btn btn-sec" type="submit" style="width:100%">Elegir Pro</button></form>
+        {% elif pagos_activos %}<a class="btn btn-sec" href="/registro">Elegir Pro</a>
+        {% else %}<button class="btn btn-sec" type="button" disabled>Próximamente</button>{% endif %}
+      </div>
+    </div>
+    <p class="nota-precios">Pago seguro con Stripe. Los vídeos que fallan no cuentan.</p>
+  </div>
+</section>
+
+<section id="faq" aria-labelledby="faq-titulo">
+  <div class="contenedor">
+    <div class="titulo-sec">
+      <small>Preguntas frecuentes</small>
+      <h2 id="faq-titulo">Lo que suele preguntarse</h2>
+    </div>
+    <div class="faq">
+      <details><summary>¿Cuánto tarda cada vídeo?</summary><p>El guion, en unos segundos; el vídeo terminado, en pocos minutos. Mientras se hace puedes cerrar la página y volver después: te espera en tu cuenta.</p></details>
+      <details><summary>¿En qué formato se descarga?</summary><p>MP4 vertical de 1080×1920 a 30 fps, de 35 a 59 segundos, con la voz y la música ya mezcladas. También descargas la miniatura en PNG.</p></details>
+      <details><summary>¿Sobre qué temas puedo hacer vídeos?</summary><p>Casi cualquiera: historia, ciencia, curiosidades, casos reales, «qué pasaría si»… No se hacen vídeos sobre personas privadas o menores, ni con contenido sexual, de odio, peligroso o desinformación.</p></details>
+      <details><summary>¿Los datos del guion son correctos?</summary><p>La IA usa datos conocidos y bien establecidos, pero puede equivocarse. Revisa el vídeo antes de publicarlo, sobre todo las cifras.</p></details>
+      <details><summary>¿Necesito saber editar vídeo?</summary><p>No. Solo escribes el tema y eliges el estilo. Todo lo demás es automático.</p></details>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="contenedor">
+    <div class="cierre">
+      <h2>Tu próximo short, en minutos</h2>
+      <p>Escribe una idea y deja que la IA haga el resto.</p>
+      <a class="btn btn-primario" href="{{ '#crear-sec' if usuario else '/registro' }}">Crear vídeo gratis</a>
+    </div>
+  </div>
+</section>
+
+{% include "_pie.html" %}
+
+<script>
+const CSRF = "{{ csrf() }}";
+const CON_CUENTA = {{ "true" if usuario else "false" }};
+const PASOS = ["Escribiendo el guion", "Grabando la voz", "Animando el vídeo", "¡Listo!"];
+const NOMBRES = {recortes:"Papel", palitos:"Palitos", "3d":"3D", plano:"Plano", neon:"Neón", holograma:"Holograma",
+                 plastilina:"Plastilina", pixel:"Pixel art", acuarela:"Acuarela", comic:"Cómic"};
+const MOV = {tranquilo:"Tranquilo", equilibrado:"Equilibrado", "muy animado":"Mucho movimiento"};
+const VOCES = {{ voces | tojson }};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+let sonando = null;
+document.querySelectorAll("[data-escuchar]").forEach(b => b.onclick = () => {
+  if (sonando) { sonando.pause(); }
+  sonando = new Audio("/static/voz-" + b.dataset.escuchar + ".mp3");
+  sonando.play();
+  const r = document.querySelector(`input[name=voz][value="${b.dataset.escuchar}"]`); if (r) r.checked = true;
+});
+document.querySelectorAll("#ideas button").forEach(b => b.onclick = () => { $("#tema").value = b.textContent; $("#tema").focus(); });
+$("#tema").addEventListener("keydown", e => { if (e.key === "Enter") crear(); });
+if (CON_CUENTA) $("#crear").onclick = crear;
+document.querySelectorAll("input[name=visual]").forEach(r => r.onchange = () => {
+  $("#vista-img").src = "/static/vertical-" + r.value + ".jpg";
+  $("#vista-nombre").textContent = NOMBRES[r.value];
+});
+
+async function crear() {
+  const tema = $("#tema").value.trim();
+  $("#error").textContent = "";
+  if (tema.length < 3) { $("#error").textContent = "Escribe de qué quieres el vídeo."; $("#tema").focus(); return; }
+  $("#crear").disabled = true;
+  $("#crear").innerHTML = '<span class="girando"></span> Enviando…';
+  try {
+    const r = await fetch("/api/crear", {method: "POST", headers: {"Content-Type": "application/json", "X-CSRF": CSRF},
+      body: JSON.stringify({tema, estilo: document.querySelector("input[name=estilo]:checked").value,
+                            visual: document.querySelector("input[name=visual]:checked").value,
+                            voz: (document.querySelector("input[name=voz]:checked") || {}).value,
+                            revisar: $("#revisar").checked})});
+    const d = await r.json().catch(() => ({}));
+    if (r.status === 401) { location.href = d.entrar || "/entrar"; return; }
+    if (!r.ok) { $("#error").innerHTML = esc(d.error || "No se ha podido crear.") + (d.mejorar ? ' <a href="#precios" style="color:var(--acento2)">Ver planes</a>' : ""); return; }
+    $("#tema").value = "";
+    await cargar();
+    $("#lista").scrollIntoView({behavior: "smooth", block: "start"});
+  } catch (e) { $("#error").textContent = "No hay conexión con el servidor. Vuelve a intentarlo."; }
+  finally {
+  $("#crear").disabled = false;
+  $("#crear").textContent = "Crear vídeo";
+  }
+}
+
+function chips(t) {
+  return `<span class="chip">${esc(NOMBRES[t.visual] || "Papel")}</span><span class="chip">${esc(MOV[t.estilo] || "Equilibrado")}</span>` +
+         (t.voz && VOCES[t.voz] ? `<span class="chip">🎙 ${esc(VOCES[t.voz])}</span>` : "");
+}
+
+function tarjeta(t) {
+  if (t.estado === "listo") {
+    const v = `/archivo/${t.id}/video`;
+    return `<article class="trabajo listo">
+      <video src="${v}" controls preload="metadata" poster="/archivo/${t.id}/miniatura"></video>
+      <div>
+        <div class="meta"><span class="chip ok">✓ Listo</span>${chips(t)}${t.marca ? '<span class="chip">Con marca de agua</span>' : ""}</div>
+        <div class="titulo">${esc(t.titulo)}</div>
+        <div class="meta" style="margin-bottom:10px">Tema: ${esc(t.tema)}</div>
+        <div class="desc">${esc(t.descripcion)}</div>
+        <div class="botones">
+          <a class="btn btn-primario" href="${v}?descargar=1">Descargar vídeo</a>
+          <a class="btn btn-sec" href="/archivo/${t.id}/miniatura?descargar=1">Miniatura</a>
+          <button class="btn btn-sec" type="button" data-copiar="${esc(t.titulo + "\n\n" + t.descripcion)}">Copiar título y descripción</button>
+        </div>
+      </div></article>`;
+  }
+  if (t.estado === "revisar") {
+    return `<article class="trabajo"><div style="width:100%">
+      <div class="meta"><span class="chip ok">✎ Guion listo</span>${chips(t)}</div>
+      <div class="tema">${esc(t.tema)}</div>
+      <div class="meta">Léelo, corrige lo que quieras y crea el vídeo. Si no te gusta, descártalo: no gasta vídeo.</div>
+      <div class="botones" data-guion="${t.id}">
+        <button class="btn btn-primario" type="button" data-abrir="${t.id}">Revisar el guion</button>
+        <button class="btn btn-sec" type="button" data-descartar="${t.id}">Descartar</button>
+      </div>
+      <div class="editor-guion" id="ed-${t.id}" hidden></div></div></article>`;
+  }
+  if (t.estado === "cancelado") {
+    return `<article class="trabajo"><div>
+      <div class="meta"><span class="chip">Descartado</span>${chips(t)}</div>
+      <div class="tema">${esc(t.tema)}</div>
+      <div class="meta">No ha gastado ningún vídeo de tu plan.</div></div></article>`;
+  }
+  if (t.estado === "error") {
+    return `<article class="trabajo"><div>
+      <div class="meta"><span class="chip mal">No se ha podido hacer</span>${chips(t)}</div>
+      <div class="tema">${esc(t.tema)}</div>
+      <div class="meta">${esc(t.paso)}</div></div></article>`;
+  }
+  const i = Math.max(0, PASOS.indexOf(t.paso));
+  const espera = t.estado === "en cola";
+  const pct = espera ? 3 : Math.round(((i + 0.5) / PASOS.length) * 100);
+  const texto = espera ? (t.delante ? `En cola · ${t.delante} vídeo(s) delante` : "Empieza en un momento") : t.paso + "…";
+  return `<article class="trabajo"><div>
+      <div class="meta"><span class="girando"></span><span>${esc(texto)}</span>${chips(t)}</div>
+      <div class="tema">${esc(t.tema)}</div>
+      <div class="progreso" data-progreso>
+        <div class="barra"><div style="width:${pct}%"></div></div>
+        <div class="pasos-txt">${["Guion", "Voz", "Animación", "Listo"].map((x, k) =>
+          `<span class="${!espera && k < i ? "hecho" : (!espera && k === i ? "ahora" : "")}">${x}</span>`).join("")}</div>
+      </div></div></article>`;
+}
+
+async function cargar() {
+  if (!CON_CUENTA) return;
+  try {
+    const d = await (await fetch("/api/trabajos")).json();
+    const ts = d.trabajos || [];
+    if ($("#uso-n")) { $("#uso-n").textContent = d.usados; $("#uso-barra").style.width = Math.min(100, 100 * d.usados / d.limite) + "%"; }
+    $("#lista").innerHTML = ts.length ? ts.map(tarjeta).join("")
+      : '<div class="vacio">Aún no has creado ningún vídeo. Escribe un tema arriba para empezar.</div>';
+    document.querySelectorAll("[data-abrir]").forEach(b => b.onclick = () => abrirGuion(b.dataset.abrir));
+    document.querySelectorAll("[data-descartar]").forEach(b => b.onclick = () => descartar(b.dataset.descartar));
+    document.querySelectorAll("[data-copiar]").forEach(b => b.onclick = () => {
+      navigator.clipboard.writeText(b.dataset.copiar); b.textContent = "¡Copiado!";
+      setTimeout(() => b.textContent = "Copiar título y descripción", 1800);
+    });
+  } catch (e) {}
+}
+const contar = s => s.trim().split(/\s+/).filter(Boolean).length;
+
+async function abrirGuion(id) {
+  const ed = $("#ed-" + id);
+  if (!ed.hidden) { ed.hidden = true; return; }
+  ed.innerHTML = '<span class="girando"></span> Cargando…';
+  ed.hidden = false;
+  const r = await fetch("/api/guion/" + id);
+  if (!r.ok) { ed.textContent = "No se ha podido cargar el guion. Recarga la página."; return; }
+  const g = await r.json();
+  ed.innerHTML = `
+    <div class="campo"><label>Título para YouTube / TikTok</label><input data-campo="titulo" maxlength="100" value="${esc(g.titulo)}"></div>
+    ${g.partes.map((p, k) => `<div class="campo"><label>Parte ${k + 1} · lo que dice la voz <small data-n="${k}"></small></label>
+      <textarea data-parte="${k}" rows="3">${esc(p)}</textarea></div>`).join("")}
+    <div class="campo"><label>Descripción</label><textarea data-campo="descripcion" rows="4">${esc(g.descripcion)}</textarea></div>
+    <p class="meta" data-total></p>
+    <div class="error" data-error role="alert"></div>
+    <div class="botones"><button class="btn btn-primario" type="button" data-enviar>Crear el vídeo con este guion</button></div>`;
+  const total = () => {
+    const n = [...ed.querySelectorAll("[data-parte]")].reduce((a, t) => a + contar(t.value), 0);
+    ed.querySelector("[data-total]").textContent = `${n} palabras · unos ${Math.round(n * 0.42)} segundos de voz (máximo 150 palabras)`;
+    ed.querySelector("[data-total]").style.color = n > 150 ? "var(--acento)" : "";
+  };
+  ed.querySelectorAll("textarea[data-parte]").forEach(t => t.oninput = total);
+  total();
+  ed.querySelector("[data-enviar]").onclick = async () => {
+    const b = ed.querySelector("[data-enviar]");
+    b.disabled = true; b.innerHTML = '<span class="girando"></span> Enviando…';
+    const cuerpo = {titulo: ed.querySelector("[data-campo=titulo]").value,
+                    descripcion: ed.querySelector("[data-campo=descripcion]").value,
+                    partes: [...ed.querySelectorAll("[data-parte]")].map(t => t.value)};
+    const r = await fetch("/api/guion/" + id, {method: "POST", headers: {"Content-Type": "application/json", "X-CSRF": CSRF},
+                                                body: JSON.stringify(cuerpo)});
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { ed.querySelector("[data-error]").textContent = d.error || "No se ha podido enviar."; b.disabled = false; b.textContent = "Crear el vídeo con este guion"; return; }
+    ed.hidden = true;
+    await cargar();
+  };
+}
+
+async function descartar(id) {
+  if (!confirm("¿Descartar este guion? No se hará el vídeo y no gastará ninguno de tu plan.")) return;
+  await fetch("/api/cancelar/" + id, {method: "POST", headers: {"X-CSRF": CSRF}});
+  await cargar();
+}
+
+cargar();
+// solo se refresca mientras hay algo en marcha (y nunca con un guion abierto), para no cortar lo que se está viendo
+setInterval(() => {
+  if (document.querySelector(".editor-guion:not([hidden])")) return;
+  if (document.querySelector("[data-progreso]")) cargar();
+}, 5000);
+</script>
+</body>
+</html>

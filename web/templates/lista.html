@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lista de espera · Caso Recortado Studio</title>
+<meta name="description" content="Escribe un tema y la IA te hace un short animado con voz, subtítulos y 10 estilos. Apúntate para probarlo antes que nadie.">
+<link rel="stylesheet" href="/static/web.css">
+<style>
+  .lista-wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:56px 0}
+  .lista-wrap h1{font-size:clamp(34px,5vw,54px);line-height:1.05;margin:0 0 16px}
+  .lista-wrap .lead{color:var(--suave);font-size:18px;line-height:1.6;margin:0 0 22px}
+  .lista-wrap ul{list-style:none;padding:0;margin:0 0 8px;display:grid;gap:10px}
+  .lista-wrap li{display:flex;gap:10px;align-items:flex-start;color:var(--texto)}
+  .lista-wrap li b{color:var(--acento2)}
+  .demo-video{width:100%;max-width:300px;border-radius:22px;display:block;margin:24px 0 0;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+  .opciones{display:flex;gap:8px;flex-wrap:wrap}
+  .opciones label{border:1px solid var(--borde);border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:14px}
+  .opciones input{margin-right:6px}
+  .contador{color:var(--suave);font-size:14px;margin-top:10px}
+  @media (max-width:820px){.lista-wrap{grid-template-columns:1fr;gap:24px;padding:28px 0}.demo-video{max-width:240px;margin:16px auto 0}}
+</style>
+</head>
+<body>
+{% include "_cabecera.html" %}
+<main class="contenedor">
+  <div class="lista-wrap">
+    <div>
+      <h1>Escribe un tema.<br>La IA te hace el short.</h1>
+      <p class="lead">Guion, voz, animación y subtítulos en unos minutos, en 10 estilos: papel, 3D, neón, cómic, pixel art…
+        Estamos abriendo poco a poco. Apúntate y te avisamos de los primeros.</p>
+      <ul>
+        <li><b>✓</b>Vídeos verticales listos para TikTok, Reels y Shorts</li>
+        <li><b>✓</b>Revisas y corriges el guion antes de crear el vídeo</li>
+        <li><b>✓</b>Los primeros de la lista, vídeos gratis para probar</li>
+      </ul>
+      <video class="demo-video" src="/static/demo.mp4" poster="/static/demo.jpg" controls muted playsinline preload="none"></video>
+    </div>
+    <div class="caja-cuenta" style="margin:0">
+      {% if hecho %}
+        <h2 style="margin-top:0">¡Apuntado! 🎉</h2>
+        <p class="sub">Te escribiremos cuando abramos. Mientras, puedes ver cómo son los vídeos en nuestro canal.</p>
+      {% else %}
+        <h2 style="margin-top:0">Quiero probarlo</h2>
+        <form method="post">
+          <input type="hidden" name="csrf" value="{{ csrf() }}">
+          <div class="campo">
+            <label for="email">Tu email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="campo">
+            <label for="canal">Tu canal o red (opcional)</label>
+            <input id="canal" name="canal" type="text" maxlength="120" placeholder="@tucanal en TikTok, YouTube…">
+          </div>
+          <div class="campo">
+            <label>¿Pagarías unos 10 € al mes por 25 vídeos así?</label>
+            <div class="opciones">
+              <label><input type="radio" name="pagaria" value="si">Sí</label>
+              <label><input type="radio" name="pagaria" value="quiza">Quizá</label>
+              <label><input type="radio" name="pagaria" value="no">No</label>
+            </div>
+          </div>
+          <label class="casilla"><input type="checkbox" name="acepto" value="1" required>
+            <span>Acepto que me escribáis para avisarme de la apertura, según la <a href="/privacidad" target="_blank">política de privacidad</a>. Me puedo dar de baja cuando quiera.</span></label>
+          <button class="btn btn-primario" type="submit">Apuntarme</button>
+          {% if total and total >= 10 %}<p class="contador">Ya somos {{ total }} en la lista.</p>{% endif %}
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</main>
+{% include "_pie.html" %}
+</body>
+</html>

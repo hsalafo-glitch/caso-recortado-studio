@@ -1,0 +1,205 @@
+{
+ "titulo": [
+  "EL CIELO",
+  "NO ES AZUL",
+  "SOLO SE VE AZUL"
+ ],
+ "mapa": null,
+ "bloques": [
+  [
+   "¿Te has preguntado por qué el cielo es azul, si el espacio es negro y la luz del Sol es blanca?",
+   [
+    [
+     null,
+     "personaje",
+     {
+      "dia": true,
+      "gesto": "piensa",
+      "bocadillo": "¿POR QUÉ AZUL?",
+      "st": [
+       "blanca",
+       "¿Y ENTONCES?"
+      ]
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "EL ESPACIO ES NEGRO"
+    ],
+    [
+     "y la luz",
+     "LA LUZ ES BLANCA"
+    ]
+   ],
+   {
+    "blanca": "es blanca"
+   }
+  ],
+  [
+   "La luz del Sol parece blanca, pero en realidad es una mezcla de todos los colores del arcoíris viajando juntos.",
+   [
+    [
+     null,
+     "icono",
+     {
+      "ico": "sol",
+      "dia": true,
+      "entrada": "zoom",
+      "camara": "acercar",
+      "transicion": "iris"
+     }
+    ],
+    [
+     "una mezcla",
+     "texto",
+     {
+      "lineas": [
+       "LUZ BLANCA",
+       "=",
+       "TODOS",
+       "LOS COLORES"
+      ],
+      "transicion": "barrido"
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "PARECE BLANCA…"
+    ],
+    [
+     "una mezcla",
+     "EL ARCOÍRIS, JUNTO"
+    ]
+   ],
+   {}
+  ],
+  [
+   "Cuando esa luz choca con el aire, las moléculas la desvían en todas direcciones. Y el azul se dispersa mucho más que el rojo.",
+   [
+    [
+     null,
+     "proceso",
+     {
+      "ico": "sol",
+      "ico2": "nube",
+      "ico3": "estrella",
+      "label": "LUZ → AIRE → SE DISPERSA",
+      "dia": true,
+      "sacudida": "choca",
+      "transicion": "empuje"
+     }
+    ],
+    [
+     "Y el azul",
+     "comparar",
+     {
+      "ico": "gota",
+      "ico2": "fuego",
+      "label": "AZUL: REBOTA",
+      "label2": "ROJO: PASA",
+      "entrada": "cae",
+      "transicion": "flash"
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "CHOCA CON EL AIRE"
+    ],
+    [
+     "Y el azul",
+     "EL AZUL SE DISPERSA MÁS"
+    ]
+   ],
+   {
+    "choca": "choca con"
+   }
+  ],
+  [
+   "Por eso, mires donde mires, te llega luz azul de todo el cielo. Y al atardecer, la luz cruza tanto aire que el azul se pierde y queda el rojo.",
+   [
+    [
+     null,
+     "personaje",
+     {
+      "ico": "tierra",
+      "dia": true,
+      "movimiento": "gira",
+      "gesto": "senala",
+      "bocadillo": "¡TODO ES AZUL!",
+      "transicion": "zoom"
+     }
+    ],
+    [
+     "Y al atardecer",
+     "icono",
+     {
+      "ico": "sol",
+      "label": "ATARDECER: QUEDA EL ROJO",
+      "entrada": "sube",
+      "movimiento": "flota",
+      "transicion": "fundido"
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "LUZ AZUL POR TODAS PARTES"
+    ],
+    [
+     "Y al atardecer",
+     "AL ATARDECER…"
+    ]
+   ],
+   {}
+  ],
+  [
+   "Así que el cielo no es azul: solo se ve azul. ¿Qué otra cosa de la naturaleza te gustaría entender?",
+   [
+    [
+     null,
+     "texto",
+     {
+      "lineas": [
+       "NO ES AZUL",
+       "SE VE AZUL"
+      ],
+      "transicion": "barrido"
+     }
+    ],
+    [
+     "Qué otra",
+     "personaje",
+     {
+      "dia": true,
+      "gesto": "saluda",
+      "bocadillo": "¡TE LEO!",
+      "transicion": "iris"
+     }
+    ]
+   ],
+   [
+    [
+     null,
+     "EL CIELO…"
+    ],
+    [
+     "Qué otra",
+     "¿QUÉ MÁS QUIERES SABER?"
+    ]
+   ],
+   {}
+  ]
+ ],
+ "pron": {},
+ "estilo": "recortes",
+ "titulo_youtube": "El cielo no es azul: se ve azul (y esta es la razón)",
+ "descripcion": "La luz del Sol es blanca y el espacio es negro. Entonces, ¿de dónde sale el azul? ¿Qué otra cosa te gustaría entender? #ciencia #curiosidades #fisica #cielo #shorts",
+ "slug": "cielo-azul"
+}
