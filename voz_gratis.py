@@ -144,9 +144,12 @@ def worker(job_path):
 
         def decir(self, texto):
             if self.motor == "qwen":
+                # límite de duración: ~0,6 s por palabra + 4 s de margen (12 códigos por segundo). Sin él, a veces el
+                # modelo no encuentra el final y sigue «hablando» sin parar durante minutos.
+                limite = int(12 * (len(texto.split()) * 0.6 + 4))
                 wavs, self.sr = self.m.generate_voice_clone(
                     text=texto, language="Spanish", voice_clone_prompt=self.prompt, temperature=QWEN_TEMPERATURA,
-                    top_p=0.85, subtalker_temperature=QWEN_TEMPERATURA)
+                    top_p=0.85, subtalker_temperature=QWEN_TEMPERATURA, max_new_tokens=limite)
                 return np.asarray(wavs[0], dtype=np.float32)
             wav = self.m.generate(texto, language_id="es", audio_prompt_path=job["ref"], exaggeration=job.get("exag", EXAGERACION),
                                   cfg_weight=job.get("cfg", CFG), temperature=job.get("temp", TEMPERATURA))

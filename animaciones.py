@@ -91,20 +91,28 @@ def entrada(nombre, t, j=0):
         return 0, 0, math.radians(8) * (1 - k) * lado, max(0.05, k)
     if nombre == "voltea":
         # gira como una carta sobre su eje vertical (se ve de canto a mitad de camino)
-        k = _atras(clamp(t / 0.55), 1.3)
-        return 0, 0, 0, (max(0.03, abs(math.cos((1 - k) * math.pi / 2))) * (1 if k > 0.02 else 0.03), 1)
+        # (a 12 poses/s tiene que durar ~0,45 s para que se vea girar: de canto → medio → pasada → en su sitio)
+        u = clamp(t / 0.45)
+        k = (u / 0.75) * 1.1 if u < 0.75 else 1.1 - 0.1 * (u - 0.75) / 0.25     # gira a ritmo constante y se pasa un poco
+        return 0, 0, math.radians(-6) * (1 - u), (max(0.04, k), 1 + 0.07 * math.sin(u * math.pi))
     if nombre == "despliega":
         # se despliega de arriba abajo como un papel doblado
         k = _atras(clamp(t / 0.5), 1.6)
         return 0, -120 * (1 - k), 0, (1 + 0.05 * (1 - k), max(0.03, k))
     if nombre == "lanza":
         # entra lanzado desde abajo y un lado describiendo un arco y girando
-        k = _out(clamp(t / 0.6))
-        return lado * 700 * (1 - k), 600 * (1 - k) ** 2 - 260 * math.sin(k * math.pi) * (1 - k), lado * (1 - k) * 3.5, max(0.2, k)
+        k = _out(clamp(t / 0.5))
+        ap = _asienta(t, 0.42, 0.25, 0.16)              # se aplasta un poco al aterrizar
+        giro = lado * (1 - k) * 3.5 - lado * math.radians(7) * math.sin(clamp((t - 0.42) / 0.3) * math.pi) * (t > 0.42)
+        e = max(0.2, k)
+        return lado * 700 * (1 - k), 600 * (1 - k) ** 2 - 260 * math.sin(k * math.pi) * (1 - k) + ap * 40, giro, (e * (1 + ap), e * (1 - ap))
     if nombre == "estira":
         # aparece muy estrecho y alto, y rebota hasta su forma
-        k = _elastico(clamp(t / 0.8))
-        return 0, 0, 0, (max(0.05, k), max(0.05, 2 - k) if k > 0.05 else 0.05)
+        if t < 0.17:                                   # primero se ve la tira alta y estrecha…
+            u = t / 0.17
+            return 0, 0, 0, (0.12 + 0.2 * u, 1.55 - 0.15 * u)
+        k = _elastico(clamp((t - 0.17) / 0.75))         # …y luego recupera su forma rebotando como una goma
+        return 0, 0, 0, (max(0.05, 0.32 + 0.68 * k), max(0.05, 1.4 - 0.4 * k))
     if x >= 1 and t > 0.8:
         return 0, 0, 0, 1
     # pop: crece pasándose de tamaño y se asienta con un pequeño temblor de goma
@@ -156,6 +164,34 @@ def movimiento(nombre, lt, pose, j=0):
     return 0, 0, 0, 1
 
 
+# Momento del golpe (s) de las entradas que «llegan» con fuerza: salen rayitas de impacto alrededor del dibujo
+IMPACTO = {"cae": 0.27, "lanza": 0.42, "pop": 0.17, "rebota": 0.08, "zoom": 0.25}
+
+
+def impacto(ctx, x, y, t0, t, j=0, radio=190):
+    """Rayitas cortas que salen del centro del dibujo durante ~0,3 s tras el golpe (a saltos, como el resto)."""
+    u = (t - t0) / 0.3
+    if u < 0 or u >= 1:
+        return
+    try:
+        import generar_short as g
+        oscuro = getattr(g, "ESTILO", "") in ("palitos", "acuarela")
+    except Exception:
+        oscuro = False
+    r0, r1 = radio * (0.85 + 0.55 * u), radio * (1.05 + 0.75 * u)
+    ctx.save()
+    ctx.new_path()
+    ctx.set_line_width(9 * (1 - u) + 3)
+    ctx.set_line_cap(1)
+    ctx.set_source_rgba(*((0.1, 0.1, 0.15) if oscuro else (1, 0.92, 0.55)), 0.9 * (1 - u))
+    for i in range(8):
+        a = i * math.pi / 4 + 0.35 + j * 0.5
+        ctx.move_to(x + r0 * math.cos(a), y + r0 * math.sin(a) * 0.8)
+        ctx.line_to(x + r1 * math.cos(a), y + r1 * math.sin(a) * 0.8)
+    ctx.stroke()
+    ctx.restore()
+
+
 def _esc(e):
     return e if isinstance(e, tuple) else (e, e)
 
@@ -171,6 +207,8 @@ def dibujo_animado(ctx, dibujar, x, y, t, lt, pose, ent="pop", mov=None, j=0):
     sx1, sy1 = _esc(e1)
     sx2, sy2 = _esc(e2)
     sx2, sy2 = 1 + (sx2 - 1) * m, 1 + (sy2 - 1) * m
+    if ent in IMPACTO:                         # detrás del dibujo; al caer, sale del suelo
+        impacto(ctx, x, y + (90 if ent == "cae" else 0), IMPACTO[ent], t, j)
     ctx.save()
     ctx.translate(x + dx1 + dx2 * m, y + dy1 + dy2 * m)
     ctx.rotate(a1 + a2 * m)

@@ -248,7 +248,7 @@ def sc_progreso(p, i):
         ctx.set_source_rgb(*UI["borde"][:3])
         ctx.set_line_width(3)
         ctx.stroke()
-        texto_ui(ctx, "¿Por qué el cielo es azul?", x + 56, y + 92, 40, UI["texto"])
+        texto_ui(ctx, p.get("tema", "¿Por qué el cielo es azul?"), x + 56, y + 92, 40, UI["texto"])
         hechos = 0
         for j, (clave, nombre) in enumerate(pasos):
             t = since(ev, clave, lt)

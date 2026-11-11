@@ -227,3 +227,26 @@
   .legal p,.legal li{color:var(--suave)}
   .legal .borrador{background:rgba(255,210,63,.08);border:1px solid rgba(255,210,63,.3);color:#fde68a;border-radius:12px;padding:14px 16px;font-size:14px;margin:16px 0 28px}
   .legal mark{background:rgba(255,210,63,.18);color:#fde68a;padding:0 4px;border-radius:4px}
+
+  /* ── animaciones de la página (suaves; se desactivan si el usuario pide menos movimiento) ── */
+  @keyframes entra{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+  @keyframes flota-movil{0%,100%{transform:rotate(2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-10px)}}
+  @keyframes brillo{from{background-position:200% 0}to{background-position:-200% 0}}
+  .hero h1,.hero .lead,.hero .cta,.hero .confianza,.hero .pildora{animation:entra .6s cubic-bezier(.2,.8,.2,1) both}
+  .hero .pildora{animation-delay:.02s}.hero h1{animation-delay:.08s}.hero .lead{animation-delay:.16s}
+  .hero .cta{animation-delay:.24s}.hero .confianza{animation-delay:.32s}
+  .hero .movil{animation:flota-movil 6s ease-in-out infinite}
+  .etiqueta-flot{animation:entra .6s .5s cubic-bezier(.2,.8,.2,1) both}
+  .js .revelar{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1);transition-delay:var(--d,0s)}
+  .js .revelar.visto{opacity:1;transform:none}
+  .tarjeta,.plan,.galeria figure,details{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+  .tarjeta:hover,.galeria figure:hover{transform:translateY(-4px);border-color:var(--borde2);box-shadow:var(--sombra)}
+  .plan:hover{transform:translateY(-4px);box-shadow:var(--sombra)}
+  .galeria img{transition:transform .35s ease}
+  .galeria figure:hover img{transform:scale(1.05)}
+  details:hover{border-color:var(--borde2)}
+  .btn:active{transform:translateY(1px) scale(.98)}
+  .trabajo{animation:entra .4s cubic-bezier(.2,.8,.2,1) both}
+  .progreso .barra div{background-image:linear-gradient(90deg,var(--acento),var(--amarillo),var(--acento));background-size:200% 100%;animation:brillo 2.2s linear infinite}
+  .flash div{animation:entra .35s ease both}
+  .caja-cuenta{animation:entra .45s cubic-bezier(.2,.8,.2,1) both}
