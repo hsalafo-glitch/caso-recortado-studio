@@ -9,4 +9,4 @@ if [ "$CR_SOLO_LISTA" != "1" ]; then
   python web/worker.py &
 fi
 cd web
-exec gunicorn -w 2 -k gthread --threads 8 -b "0.0.0.0:${PORT:-8000}" --access-logfile - app:app
+exec gunicorn --preload -w 2 -k gthread --threads 8 -b "0.0.0.0:${PORT:-8000}" --access-logfile - app:app

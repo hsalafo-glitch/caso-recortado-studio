@@ -83,6 +83,18 @@ COLUMNAS_NUEVAS = {
 
 
 def crear_tablas():
+    """Crea o actualiza las tablas. Un cerrojo de archivo evita que dos procesos (web y obrero, o dos procesos de la web)
+    lo hagan a la vez y choquen («database is locked»)."""
+    import fcntl
+    with open(RUTA + ".cerrojo", "w") as cerrojo:
+        fcntl.flock(cerrojo, fcntl.LOCK_EX)
+        try:
+            _crear_tablas()
+        finally:
+            fcntl.flock(cerrojo, fcntl.LOCK_UN)
+
+
+def _crear_tablas():
     with conectar() as c:
         c.executescript(ESQUEMA)
         for tabla, cols in COLUMNAS_NUEVAS.items():
