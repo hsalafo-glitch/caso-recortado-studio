@@ -16,6 +16,37 @@ GESTOS = ["neutro", "saluda", "senala", "piensa", "sorpresa", "celebra", "triste
 
 PIEL, CAMISETA, PANTALON, ZAPATO = hexc("#f2c9a0"), hexc("#e63946"), hexc("#2b3a67"), hexc("#1d1f29")
 PELO, MEJILLA, SUELA = hexc("#3b2416"), hexc("#ff8a8a"), hexc("#f4f1ea")
+
+# ── Personalización (la elige el usuario en la web): opciones sencillas, cada una con su nombre para la web ──
+OPCIONES = {
+    "pelo": {"corto": "Corto", "largo": "Largo", "rizado": "Rizado", "coleta": "Coleta", "calvo": "Calvo"},
+    "color_pelo": {"castano": ("Castaño", "#3b2416"), "negro": ("Negro", "#16161c"), "rubio": ("Rubio", "#e0b45a"),
+                   "pelirrojo": ("Pelirrojo", "#b5462a"), "canoso": ("Canoso", "#c4c4ca")},
+    "piel": {"clara": ("Clara", "#f2c9a0"), "media": ("Media", "#d9a273"), "morena": ("Morena", "#a8704a"),
+             "oscura": ("Oscura", "#6b4430")},
+    "ropa": {"rojo": ("Roja", "#e63946"), "azul": ("Azul", "#2f6fd6"), "verde": ("Verde", "#2a9d6f"),
+             "negro": ("Negra", "#2b2b33"), "amarillo": ("Amarilla", "#f2b632"), "morado": ("Morada", "#7b4fd6")},
+    "gafas": {"no": "Sin gafas", "si": "Con gafas"},
+    "barba": {"no": "Sin barba", "si": "Con barba"},
+}
+POR_DEFECTO = {"pelo": "corto", "color_pelo": "castano", "piel": "clara", "ropa": "rojo", "gafas": "no", "barba": "no"}
+ASPECTO = dict(POR_DEFECTO)
+
+
+def valida(d):
+    """Devuelve un aspecto válido: cualquier valor desconocido se cambia por el de por defecto."""
+    d = d if isinstance(d, dict) else {}
+    return {k: (d.get(k) if d.get(k) in OPCIONES[k] else v) for k, v in POR_DEFECTO.items()}
+
+
+def aspecto(d=None):
+    """Elige el aspecto del narrador para los dibujos que vengan después."""
+    global PIEL, CAMISETA, PELO
+    ASPECTO.clear()
+    ASPECTO.update(valida(d))
+    PIEL = hexc(OPCIONES["piel"][ASPECTO["piel"]][1])
+    CAMISETA = hexc(OPCIONES["ropa"][ASPECTO["ropa"]][1])
+    PELO = hexc(OPCIONES["color_pelo"][ASPECTO["color_pelo"]][1])
 SIN_VOLUMEN = ("palitos", "neon", "holograma", "pixel")    # estilos de línea: sin sombreado ni rubor
 
 
@@ -52,6 +83,40 @@ POSES = {
 }
 ENTRA = 0.7      # segundos andando hasta su sitio
 MEZCLA = 0.3     # segundos para pasar del andar al gesto
+
+
+def _pelo_delante(ctx, cab, cab_r, s, estilo):
+    """Pelo encima de la cabeza según el estilo elegido."""
+    px, py = cab[0] - 4 * s, cab[1] - cab_r * 0.55
+    if estilo == "calvo":                                     # solo los lados y un brillo en la cabeza
+        for lado in (-1, 1):
+            piece(ctx, P_ell(cab[0] + lado * cab_r * 0.86, cab[1] - cab_r * 0.12, cab_r * 0.17, cab_r * 0.3), PELO, lw=3,
+                  shadow=False)
+        if G.ESTILO not in SIN_VOLUMEN:
+            line(ctx, [(cab[0] - cab_r * 0.4, cab[1] - cab_r * 0.7), (cab[0] - cab_r * 0.05, cab[1] - cab_r * 0.82)],
+                 9 * s, (1, 1, 1, 0.35))
+        return
+    if estilo == "rizado":                                    # nube de rizos
+        for i in range(9):
+            a = math.pi * (1.05 + i * 0.9 / 8)
+            piece(ctx, P_ell(cab[0] + cab_r * 0.82 * math.cos(a), cab[1] - cab_r * 0.25 + cab_r * 0.72 * math.sin(a),
+                             cab_r * 0.3, cab_r * 0.3), PELO, lw=4, shadow=False)
+        piece(ctx, P_ell(cab[0], cab[1] - cab_r * 0.66, cab_r * 0.72, cab_r * 0.36), PELO, lw=0, shadow=False, outline=False)
+        return
+    pelo = [(px - cab_r * 0.95, py + 34 * s), (px - cab_r * 0.98, py - 6 * s), (px - cab_r * 0.7, py - 46 * s),
+            (px - cab_r * 0.2, py - 62 * s), (px + cab_r * 0.45, py - 58 * s), (px + cab_r * 0.88, py - 28 * s),
+            (px + cab_r * 0.98, py + 22 * s), (px + cab_r * 0.72, py + 12 * s),               # lado derecho
+            (px + cab_r * 0.48, py + 16 * s), (px + cab_r * 0.30, py - 2 * s),                # flequillo (mechones)
+            (px + cab_r * 0.05, py + 18 * s), (px - cab_r * 0.18, py - 2 * s),
+            (px - cab_r * 0.45, py + 20 * s), (px - cab_r * 0.62, py + 2 * s), (px - cab_r * 0.82, py + 26 * s)]
+    if estilo == "largo":                                     # raya al lado, cae por los dos lados de la cara
+        pelo = [(px - cab_r * 1.02, py + 90 * s), (px - cab_r * 0.98, py - 6 * s), (px - cab_r * 0.7, py - 46 * s),
+                (px - cab_r * 0.2, py - 62 * s), (px + cab_r * 0.45, py - 58 * s), (px + cab_r * 0.9, py - 28 * s),
+                (px + cab_r * 1.04, py + 90 * s), (px + cab_r * 0.84, py + 60 * s), (px + cab_r * 0.66, py + 4 * s),
+                (px - cab_r * 0.2, py + 22 * s), (px - cab_r * 0.72, py + 14 * s), (px - cab_r * 0.84, py + 60 * s)]
+    piece(ctx, P_poly(pelo), PELO, lw=4, shadow=False)
+    if G.ESTILO not in SIN_VOLUMEN:                          # brillo del pelo
+        line(ctx, [(px - cab_r * 0.45, py - 30 * s), (px - cab_r * 0.05, py - 44 * s)], 7 * s, (1, 1, 1, 0.25))
 
 
 def _punta(o, largo, ang, lado):
@@ -139,22 +204,21 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
     if gesto == "senala" and k > 0.9:                       # dedo índice
         line(ctx, [mano, (mano[0] + 30 * s, mano[1] - 4 * s)], 9 * s, INK)
 
-    # cabeza: orejas, cara con volumen, pelo con flequillo
+    # cabeza: pelo de detrás (largo, coleta), orejas, cara con volumen, pelo de delante
+    estilo_pelo = ASPECTO["pelo"]
+    if estilo_pelo == "largo":
+        piece(ctx, P_rrect(cab[0] - cab_r * 1.08, cab[1] - cab_r * 0.75, cab_r * 2.16, cab_r * 2.05, cab_r * 0.7),
+              PELO, lw=4, shadow=False)
+    elif estilo_pelo == "coleta":
+        piece(ctx, P_ell(cab[0] + cab_r * 1.0, cab[1] + cab_r * 0.15, cab_r * 0.32, cab_r * 0.62), PELO, lw=4, shadow=False)
+        piece(ctx, P_ell(cab[0] + cab_r * 0.86, cab[1] - cab_r * 0.42, cab_r * 0.16, cab_r * 0.16), hexc("#e63946"), lw=3,
+              shadow=False)
     for lado in (-1, 1):
         piece(ctx, P_ell(cab[0] + lado * cab_r * 0.96, cab[1] + 8 * s, 17 * s, 24 * s), PIEL, lw=4, shadow=False)
     cara = P_ell(cab[0], cab[1], cab_r, cab_r * 0.95)
     piece(ctx, cara, PIEL, lw=5)
     _volumen(ctx, cara, 1, 0.13, 0.3)
-    px, py = cab[0] - 4 * s, cab[1] - cab_r * 0.55
-    pelo = [(px - cab_r * 0.95, py + 34 * s), (px - cab_r * 0.98, py - 6 * s), (px - cab_r * 0.7, py - 46 * s),
-            (px - cab_r * 0.2, py - 62 * s), (px + cab_r * 0.45, py - 58 * s), (px + cab_r * 0.88, py - 28 * s),
-            (px + cab_r * 0.98, py + 22 * s), (px + cab_r * 0.72, py + 12 * s),               # lado derecho
-            (px + cab_r * 0.48, py + 16 * s), (px + cab_r * 0.30, py - 2 * s),                # flequillo (mechones)
-            (px + cab_r * 0.05, py + 18 * s), (px - cab_r * 0.18, py - 2 * s),
-            (px - cab_r * 0.45, py + 20 * s), (px - cab_r * 0.62, py + 2 * s), (px - cab_r * 0.82, py + 26 * s)]
-    piece(ctx, P_poly(pelo), PELO, lw=4, shadow=False)
-    if G.ESTILO not in SIN_VOLUMEN:                          # brillo del pelo
-        line(ctx, [(px - cab_r * 0.45, py - 30 * s), (px - cab_r * 0.05, py - 44 * s)], 7 * s, (1, 1, 1, 0.25))
+    _pelo_delante(ctx, cab, cab_r, s, estilo_pelo)
     parpadeo = pose % 34 in (0, 1)
     dx = mira * 9 * s
     for lado in (-1, 1):
@@ -170,6 +234,23 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
         sube = (12 if c > 0 else 0) * s + (8 * s if (g[3] == 2 and lado == 1) else 0)
         incl = (-8 if g[3] < 0 else (4 if g[3] == 3 else 0)) * s * lado
         line(ctx, [(ex - 16 * s, ey - 30 * s - sube + incl), (ex + 16 * s, ey - 30 * s - sube - incl)], 8 * s, hexc("#24150c"))
+    if ASPECTO["barba"] == "si":                            # barba: rodea la boca por debajo
+        piece(ctx, P_poly([(cab[0] - cab_r * 0.86, cab[1] + 6 * s), (cab[0] - cab_r * 0.7, cab[1] + cab_r * 0.62),
+                           (cab[0] - cab_r * 0.3, cab[1] + cab_r * 0.92), (cab[0] + cab_r * 0.3, cab[1] + cab_r * 0.92),
+                           (cab[0] + cab_r * 0.7, cab[1] + cab_r * 0.62), (cab[0] + cab_r * 0.86, cab[1] + 6 * s),
+                           (cab[0] + cab_r * 0.5, cab[1] + 34 * s), (cab[0] - cab_r * 0.5, cab[1] + 34 * s)]),
+              PELO, lw=4, shadow=False)
+        piece(ctx, P_ell(cab[0] + dx * 0.4, cab[1] + 48 * s, 30 * s, 17 * s), PIEL, lw=0, shadow=False, outline=False)
+    if ASPECTO["gafas"] == "si":
+        for lado in (-1, 1):
+            ctx.new_path()
+            ctx.arc(cab[0] + lado * 34 * s, cab[1] + 2 * s, 27 * s, 0, 2 * math.pi)
+            G.set_col(ctx, (1, 1, 1, 0.12))
+            ctx.fill_preserve()
+            G.set_col(ctx, INK)
+            ctx.set_line_width(7 * s)
+            ctx.stroke()
+        line(ctx, [(cab[0] - 8 * s, cab[1] - 2 * s), (cab[0] + 8 * s, cab[1] - 2 * s)], 6 * s, INK)
     if G.ESTILO not in SIN_VOLUMEN:                          # mejillas y nariz
         for lado in (-1, 1):
             piece(ctx, P_ell(cab[0] + lado * 58 * s, cab[1] + 34 * s, 16 * s, 9 * s), (*MEJILLA[:3], 0.45), lw=0,

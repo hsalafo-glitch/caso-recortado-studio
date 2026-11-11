@@ -35,6 +35,8 @@ import editar  # noqa: E402
 import fabrica  # noqa: E402
 import guionista  # noqa: E402
 import voces  # noqa: E402
+sys.path.insert(0, fabrica.RAIZ)
+import personaje  # noqa: E402  (el narrador animado: opciones y dibujo para la vista previa)
 
 SALIDA = datos("salida") if os.environ.get("CR_DATOS") else os.path.join(fabrica.RAIZ, "salida")
 DEMO = os.environ.get("CR_DEMO") == "1"
@@ -142,6 +144,7 @@ def proteger():
 def contexto():
     u = usuario_actual()
     datos = dict(demo=DEMO, usuario=u, planes=db.PLANES, pagos_activos=PAGOS_ACTIVOS, voces=voces.VOCES,
+                 narrador=personaje.OPCIONES, narrador_def=personaje.POR_DEFECTO,
                  solo_lista=SOLO_LISTA, admin=bool(ADMIN and u and u["email"] == ADMIN), legal=LEGAL)
     if u:
         usados, limite = db.uso(con(), u)
@@ -249,6 +252,7 @@ def crear():
     estilo = datos.get("estilo") if datos.get("estilo") in guionista.ESTILOS else "equilibrado"
     visual = datos.get("visual") if datos.get("visual") in guionista.estilos.ESTILOS else "recortes"
     voz = voces.valida(datos.get("voz"))
+    narrador = json.dumps(personaje.valida(datos.get("personaje")), ensure_ascii=False) if datos.get("personaje") else None
     revisar = 1 if datos.get("revisar") else 0
     if not 3 <= len(tema) <= 200:
         return jsonify(error="Escribe un tema de entre 3 y 200 caracteres."), 400
@@ -266,9 +270,9 @@ def crear():
             return jsonify(error="Tienes 3 vídeos en marcha. Espera a que acabe alguno."), 429
         tid = uuid.uuid4().hex[:12]
         marca = 1 if db.PLANES.get(u["plan"], db.PLANES["gratis"])["marca"] else 0
-        c.execute("INSERT INTO trabajos (id, usuario_id, tema, estilo, visual, marca, voz, revisar, estado, paso, inicio) "
-                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'en cola', 'Esperando turno', ?)",
-                  (tid, u["id"], tema, estilo, visual, marca, voz, revisar, db.ahora()))
+        c.execute("INSERT INTO trabajos (id, usuario_id, tema, estilo, visual, marca, voz, revisar, personaje, estado, paso, "
+                  "inicio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'en cola', 'Esperando turno', ?)",
+                  (tid, u["id"], tema, estilo, visual, marca, voz, revisar, narrador, db.ahora()))
     return jsonify(id=tid)
 
 
@@ -288,6 +292,37 @@ def lista():
             t["delante"] = cola.index(r["id"])
         out.append(t)
     return jsonify(trabajos=out, usados=usados, limite=limite)
+
+
+_DIBUJO = threading.Lock()
+
+
+@app.get("/api/narrador.png")
+def vista_narrador():
+    """Vista previa del narrador con las opciones elegidas (se dibuja con el mismo motor que el vídeo)."""
+    d = personaje.valida({k: request.args.get(k) for k in personaje.POR_DEFECTO})
+    clave = tuple(sorted(d.items()))
+    if clave not in _VISTAS:
+        import cairo
+        import generar_short as G
+        with _DIBUJO:                                   # el aspecto es global del motor: un dibujo cada vez
+            G.ESTILO = "recortes"
+            personaje.aspecto(d)
+            sup = cairo.ImageSurface(cairo.FORMAT_ARGB32, 340, 470)
+            ctx = cairo.Context(sup)
+            ctx.translate(170, 452)
+            ctx.scale(0.62, 0.62)
+            personaje.dibujar(ctx, 0, 0, 1.0, "saluda", 3.0, 12)
+            personaje.aspecto(None)
+            buf = io.BytesIO()
+            sup.write_to_png(buf)
+        if len(_VISTAS) > 3000:
+            _VISTAS.clear()
+        _VISTAS[clave] = buf.getvalue()
+    return _VISTAS[clave], 200, {"Content-Type": "image/png", "Cache-Control": "public, max-age=86400"}
+
+
+_VISTAS = {}
 
 
 def trabajo_propio(tid, estado=None):

@@ -80,7 +80,7 @@ def escribir_guion(t):
         caso = guion_demo(t["tema"])
         slug = caso.pop("slug")
     else:
-        g = guionista.escribir(t["tema"], t["estilo"])
+        g = guionista.escribir(t["tema"], t["estilo"], narrador=bool(t["personaje"]))
         caso = guionista.a_lote14(g)
         slug = g.slug
     caso["estilo"] = t["visual"]                          # el estilo visual lo decide el usuario
@@ -97,11 +97,15 @@ def procesar(t):
             caso, slug = json.loads(t["guion"]), t["slug"]
         else:
             caso, slug = escribir_guion(t)
+            if t["personaje"]:
+                caso["personaje"] = json.loads(t["personaje"])
             actualizar(tid, slug=slug, titulo=caso["titulo_youtube"], descripcion=caso["descripcion"],
                        guion=json.dumps(caso, ensure_ascii=False))
             if t["revisar"]:                              # se para aquí: el usuario lo lee, lo corrige y lo confirma
                 actualizar(tid, estado="revisar", paso="Revisa el guion")
                 return
+        if t["personaje"]:
+            caso["personaje"] = json.loads(t["personaje"])
         actualizar(tid, titulo=caso["titulo_youtube"], descripcion=caso["descripcion"])
         script = fabrica.preparar(slug, caso)
         fabrica.fabricar(script, log, lambda p: actualizar(tid, paso=p), voz=t["voz"])

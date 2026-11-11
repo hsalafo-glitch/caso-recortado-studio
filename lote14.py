@@ -603,10 +603,12 @@ def registrar(slug, d):
         bloques.append((voz, esc, [tuple(x) for x in pantalla], dict(eventos)))
     caso(slug, tuple(d["titulo"]), tuple(d["mapa"]) if d.get("mapa") else None, bloques, d.get("pron"))
     C[slug]["estilo"] = d.get("estilo") or "recortes"
+    C[slug]["personaje"] = d.get("personaje")             # aspecto del narrador elegido en la web
 
 
 def cargar(slug):
     c = C[slug]
+    PJ.aspecto(c.get("personaje"))                        # sin elegir: el narrador de siempre
     bloques, scenes = [], {}
     previa = None
     for bi, (voz, escenas, pantalla, eventos) in enumerate(c["bloques"]):

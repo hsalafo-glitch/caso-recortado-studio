@@ -278,13 +278,16 @@ ESTILOS = {
 }
 
 
-def escribir(tema: str, estilo: str = "equilibrado", client=None) -> Guion:
+def escribir(tema: str, estilo: str = "equilibrado", client=None, narrador: bool = False) -> Guion:
     """Tema → Guion revisado. Lanza ValueError con un mensaje para el usuario si no se puede."""
     if client is None:
         if not os.environ.get("ANTHROPIC_API_KEY"):
             raise ValueError("Falta la clave de Claude: ponla en web/.env (ANTHROPIC_API_KEY=...) o arranca en modo demo.")
         client = anthropic.Anthropic(base_url="https://api.anthropic.com")
     extra = ESTILOS.get(estilo, "")
+    if narrador:                                   # el usuario ha diseñado su narrador: que se vea
+        extra += ("\nEl usuario ha personalizado el narrador: usa escenas «personaje» en el gancho y en el cierre "
+                  "(2-3 en total), con gestos y bocadillos que acompañen a la voz.")
     mensajes = [{"role": "user", "content": f"Tema del short: {tema}" + (f"\n{extra}" if extra else "")}]
     g, texto = _pedir(client, mensajes)
     if g.rechazo:

@@ -250,3 +250,13 @@
   .progreso .barra div{background-image:linear-gradient(90deg,var(--acento),var(--amarillo),var(--acento));background-size:200% 100%;animation:brillo 2.2s linear infinite}
   .flash div{animation:entra .35s ease both}
   .caja-cuenta{animation:entra .45s cubic-bezier(.2,.8,.2,1) both}
+
+  /* ── narrador personalizable ── */
+  .narrador{display:grid;grid-template-columns:170px 1fr;gap:20px;align-items:start;background:var(--bg2);border:1px solid var(--borde);border-radius:16px;padding:16px}
+  .narrador img{width:170px;height:auto;background:radial-gradient(closest-side,rgba(255,255,255,.08),transparent);border-radius:12px;transition:opacity .15s}
+  .narrador-opciones{display:grid;gap:10px}
+  .narrador-fila{display:grid;gap:6px}
+  .narrador-fila>span{font-size:13px;font-weight:600;color:var(--suave)}
+  .narrador .segmentos label{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;font-size:13px}
+  .muestra{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid rgba(255,255,255,.35);flex:none}
+  @media (max-width:640px){.narrador{grid-template-columns:1fr;justify-items:center}.narrador-opciones{width:100%}}

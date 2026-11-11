@@ -77,7 +77,8 @@ def conectar():
 COLUMNAS_NUEVAS = {
     "trabajos": {"voz": "TEXT NOT NULL DEFAULT 'narrador'",   # voz de la web elegida (nunca la del dueño del canal)
                  "revisar": "INTEGER NOT NULL DEFAULT 0",       # 1 = enseñar el guion antes de hacer el vídeo
-                 "guion": "TEXT"},                              # guion (JSON) ya escrito: el obrero no lo vuelve a escribir
+                 "guion": "TEXT",                              # guion (JSON) ya escrito: el obrero no lo vuelve a escribir
+                 "personaje": "TEXT"},                         # aspecto del narrador elegido (JSON)
 }
 
 

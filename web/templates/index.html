@@ -100,6 +100,28 @@
             <span>Quiero leer y corregir el guion antes de crear el vídeo</span></label>
         </div>
 
+        <div class="bloque">
+          <p class="paso"><b>5</b>Tu narrador <span style="color:var(--tenue);font-weight:500">(opcional)</span></p>
+          <label class="casilla" style="margin:0 0 12px"><input type="checkbox" id="narrador-on">
+            <span>Quiero personalizar el personaje que presenta el vídeo</span></label>
+          <div class="narrador" id="narrador" hidden>
+            <img id="narrador-img" src="/api/narrador.png" alt="Vista previa del narrador" width="170" height="235">
+            <div class="narrador-opciones">
+              {% set nombres = {"pelo": "Pelo", "color_pelo": "Color de pelo", "piel": "Piel", "ropa": "Ropa", "gafas": "Gafas", "barba": "Barba"} %}
+              {% for clave, valores in narrador.items() %}
+              <div class="narrador-fila">
+                <span>{{ nombres[clave] }}</span>
+                <div class="segmentos" role="radiogroup" aria-label="{{ nombres[clave] }}">
+                  {% for v, et in valores.items() %}
+                  <label>{% if et is not string %}<i class="muestra" style="background:{{ et[1] }}"></i>{% endif %}<input type="radio" name="n-{{ clave }}" value="{{ v }}" {{ "checked" if narrador_def[clave] == v }}>{{ et if et is string else et[0] }}</label>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
         <div class="pie-creador">
           {% if usuario %}
           <button id="crear" class="btn btn-primario" type="button">Crear vídeo</button>
@@ -257,6 +279,15 @@ const VOCES = {{ voces | tojson }};
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
+const CLAVES_NARRADOR = {{ narrador_def | tojson }};
+function narrador() {
+  const d = {};
+  for (const k in CLAVES_NARRADOR) d[k] = (document.querySelector(`input[name="n-${k}"]:checked`) || {}).value;
+  return d;
+}
+function verNarrador() { $("#narrador-img").src = "/api/narrador.png?" + new URLSearchParams(narrador()); }
+$("#narrador-on").onchange = e => { $("#narrador").hidden = !e.target.checked; if (e.target.checked) verNarrador(); };
+document.querySelectorAll('#narrador input[type=radio]').forEach(r => r.onchange = verNarrador);
 let sonando = null;
 document.querySelectorAll("[data-escuchar]").forEach(b => b.onclick = () => {
   if (sonando) { sonando.pause(); }
@@ -283,7 +314,8 @@ async function crear() {
       body: JSON.stringify({tema, estilo: document.querySelector("input[name=estilo]:checked").value,
                             visual: document.querySelector("input[name=visual]:checked").value,
                             voz: (document.querySelector("input[name=voz]:checked") || {}).value,
-                            revisar: $("#revisar").checked})});
+                            revisar: $("#revisar").checked,
+                            personaje: $("#narrador-on").checked ? narrador() : null})});
     const d = await r.json().catch(() => ({}));
     if (r.status === 401) { location.href = d.entrar || "/entrar"; return; }
     if (!r.ok) { $("#error").innerHTML = esc(d.error || "No se ha podido crear.") + (d.mejorar ? ' <a href="#precios" style="color:var(--acento2)">Ver planes</a>' : ""); return; }
