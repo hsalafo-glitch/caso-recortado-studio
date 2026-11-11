@@ -119,6 +119,19 @@ def _pelo_delante(ctx, cab, cab_r, s, estilo):
         line(ctx, [(px - cab_r * 0.45, py - 30 * s), (px - cab_r * 0.05, py - 44 * s)], 7 * s, (1, 1, 1, 0.25))
 
 
+CAPAS = None      # None = todo; un conjunto de nombres = dibujar solo esas capas (vista previa por capas de la web)
+
+
+def _capa(ctx, nombre, empieza):
+    """Si solo se piden algunas capas, lo de las demás se dibuja en un grupo que se descarta."""
+    if CAPAS is None or nombre in CAPAS:
+        return
+    if empieza:
+        ctx.push_group()
+    else:
+        ctx.pop_group()
+
+
 def _punta(o, largo, ang, lado):
     a = math.radians(ang)
     return (o[0] + lado * largo * math.sin(a), o[1] + largo * math.cos(a))
@@ -160,6 +173,7 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
     cab_r = 92 * s
     cab = (x + g[4] * 0.6 * s * k, hombro_y - cab_r * 0.78)
 
+    _capa(ctx, "cuerpo", True)
     # sombra en el suelo (más pequeña y suave cuanto más alto salta)
     import escenario
     alto = max(0.0, pies - y0 - 3 * s)
@@ -204,6 +218,8 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
     if gesto == "senala" and k > 0.9:                       # dedo índice
         line(ctx, [mano, (mano[0] + 30 * s, mano[1] - 4 * s)], 9 * s, INK)
 
+    _capa(ctx, "cuerpo", False)
+    _capa(ctx, "pelo_detras", True)
     # cabeza: pelo de detrás (largo, coleta), orejas, cara con volumen, pelo de delante
     estilo_pelo = ASPECTO["pelo"]
     if estilo_pelo == "largo":
@@ -213,12 +229,18 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
         piece(ctx, P_ell(cab[0] + cab_r * 1.0, cab[1] + cab_r * 0.15, cab_r * 0.32, cab_r * 0.62), PELO, lw=4, shadow=False)
         piece(ctx, P_ell(cab[0] + cab_r * 0.86, cab[1] - cab_r * 0.42, cab_r * 0.16, cab_r * 0.16), hexc("#e63946"), lw=3,
               shadow=False)
+    _capa(ctx, "pelo_detras", False)
+    _capa(ctx, "cara", True)
     for lado in (-1, 1):
         piece(ctx, P_ell(cab[0] + lado * cab_r * 0.96, cab[1] + 8 * s, 17 * s, 24 * s), PIEL, lw=4, shadow=False)
     cara = P_ell(cab[0], cab[1], cab_r, cab_r * 0.95)
     piece(ctx, cara, PIEL, lw=5)
     _volumen(ctx, cara, 1, 0.13, 0.3)
+    _capa(ctx, "cara", False)
+    _capa(ctx, "pelo", True)
     _pelo_delante(ctx, cab, cab_r, s, estilo_pelo)
+    _capa(ctx, "pelo", False)
+    _capa(ctx, "ojos", True)
     parpadeo = pose % 34 in (0, 1)
     dx = mira * 9 * s
     for lado in (-1, 1):
@@ -234,6 +256,8 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
         sube = (12 if c > 0 else 0) * s + (8 * s if (g[3] == 2 and lado == 1) else 0)
         incl = (-8 if g[3] < 0 else (4 if g[3] == 3 else 0)) * s * lado
         line(ctx, [(ex - 16 * s, ey - 30 * s - sube + incl), (ex + 16 * s, ey - 30 * s - sube - incl)], 8 * s, hexc("#24150c"))
+    _capa(ctx, "ojos", False)
+    _capa(ctx, "barba", True)
     if ASPECTO["barba"] == "si":                            # barba: rodea la boca por debajo
         piece(ctx, P_poly([(cab[0] - cab_r * 0.86, cab[1] + 6 * s), (cab[0] - cab_r * 0.7, cab[1] + cab_r * 0.62),
                            (cab[0] - cab_r * 0.3, cab[1] + cab_r * 0.92), (cab[0] + cab_r * 0.3, cab[1] + cab_r * 0.92),
@@ -241,6 +265,8 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
                            (cab[0] + cab_r * 0.5, cab[1] + 34 * s), (cab[0] - cab_r * 0.5, cab[1] + 34 * s)]),
               PELO, lw=4, shadow=False)
         piece(ctx, P_ell(cab[0] + dx * 0.4, cab[1] + 48 * s, 30 * s, 17 * s), PIEL, lw=0, shadow=False, outline=False)
+    _capa(ctx, "barba", False)
+    _capa(ctx, "gafas", True)
     if ASPECTO["gafas"] == "si":
         for lado in (-1, 1):
             ctx.new_path()
@@ -251,6 +277,8 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
             ctx.set_line_width(7 * s)
             ctx.stroke()
         line(ctx, [(cab[0] - 8 * s, cab[1] - 2 * s), (cab[0] + 8 * s, cab[1] - 2 * s)], 6 * s, INK)
+    _capa(ctx, "gafas", False)
+    _capa(ctx, "boca", True)
     if G.ESTILO not in SIN_VOLUMEN:                          # mejillas y nariz
         for lado in (-1, 1):
             piece(ctx, P_ell(cab[0] + lado * 58 * s, cab[1] + 34 * s, 16 * s, 9 * s), (*MEJILLA[:3], 0.45), lw=0,
@@ -274,4 +302,5 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
         for i, (px, py, r) in enumerate(((95, -95, 9), (120, -125, 13), (150, -165, 18))):
             if (pose // 4) % 4 >= i:
                 piece(ctx, P_ell(cab[0] + px * s, cab[1] + py * s, r * s), (1, 1, 1), lw=3, shadow=False)
+    _capa(ctx, "boca", False)
     return cab
