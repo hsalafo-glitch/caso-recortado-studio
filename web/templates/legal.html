@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ {"aviso": "Aviso legal", "privacidad": "Política de privacidad", "condiciones": "Condiciones de uso"}[doc] }} · Caso Recortado Studio</title>
+{% include "_meta.html" %}
 <link rel="stylesheet" href="/static/web.css">
 </head>
 <body>
@@ -52,11 +53,11 @@ vídeo antes de publicarlo.</p>
 <ul>
   <li><b>Anthropic</b> (Estados Unidos): el tema que escribes se envía a su IA para generar el guion.</li>
   <li><b>Stripe</b> (Irlanda/Estados Unidos): pagos y facturación.</li>
-  <li><b>Servicio de email</b> ({{ d(legal.proveedor_email, "[p. ej. Brevo, Francia]") }}): solo para enviarte los emails de la cuenta.</li>
-  <li><b>Proveedor de alojamiento:</b> {{ d(legal.hosting, "[nombre del proveedor y país]") }}.</li>
+  {% if legal.proveedor_email %}<li><b>Servicio de email</b> ({{ legal.proveedor_email }}): solo para enviarte los emails de la cuenta.</li>{% endif %}
+  {% if legal.hosting %}<li><b>Proveedor de alojamiento:</b> {{ legal.hosting }}.</li>{% endif %}
 </ul>
-<p>Las transferencias fuera del Espacio Económico Europeo se hacen con las garantías que ofrecen estos proveedores
-(<mark>[revisar: cláusulas contractuales tipo o Marco de Privacidad de Datos UE-EE. UU.]</mark>).</p>
+<p>Cuando un proveedor trata datos fuera del Espacio Económico Europeo, lo hace con las garantías que exige el RGPD y que ese
+proveedor ofrece (por ejemplo, cláusulas contractuales tipo o el Marco de Privacidad de Datos UE-EE. UU.).</p>
 <h2>Cuánto tiempo</h2>
 <p>Mientras tengas la cuenta. Puedes borrarla tú mismo en «Mi cuenta»: tus datos y vídeos se eliminan en ese momento,
 salvo los datos de facturación que la ley obliga a conservar.</p>
@@ -73,6 +74,7 @@ al abrir la web (salvo Stripe, solo en la página de pago).</p>
 <h2>El servicio</h2>
 <p>Caso Recortado Studio crea vídeos cortos animados a partir de un tema. Los guiones, la voz y la animación se generan de forma
 automática y pueden contener errores: revisa cada vídeo antes de publicarlo.</p>
+{% if pagos_activos %}
 <h2>Planes y pagos</h2>
 <ul>
   <li><b>Gratis:</b> {{ planes.gratis.videos }} vídeos al mes, con marca de agua.</li>
@@ -82,10 +84,15 @@ automática y pueden contener errores: revisa cada vídeo antes de publicarlo.</
 <p>Los planes de pago se renuevan cada mes hasta que los canceles. Puedes cancelar en cualquier momento desde «Gestionar
 suscripción»: el plan sigue activo hasta el final del mes pagado. Los vídeos que no se usan en un mes no se acumulan. Si un vídeo
 falla, no cuenta.</p>
-<p>Precios con impuestos: <mark>[confirmar con tu gestor si el precio incluye el IVA y cómo se factura]</mark>.</p>
+<p>Los precios que se muestran incluyen los impuestos aplicables.</p>
 <h2>Derecho de desistimiento</h2>
-<p><mark>[Revisar con un profesional.]</mark> Como consumidor tienes 14 días para desistir de la suscripción. Al empezar a crear
+<p>Como consumidor tienes 14 días para desistir de la suscripción. Al empezar a crear
 vídeos aceptas que el servicio empiece de inmediato, lo que puede afectar a ese derecho según la ley de consumidores.</p>
+{% else %}
+<h2>Planes y pagos</h2>
+<p>De momento el servicio está en lista de espera: no se cobra nada. Antes de que haya planes de pago, estas condiciones se
+actualizarán con los precios y el derecho de desistimiento.</p>
+{% endif %}
 <h2>Tus vídeos</h2>
 <p>Puedes usar los vídeos que creas, también con fines comerciales. Tú eres responsable de lo que publicas con ellos.</p>
 <h2>Uso aceptable</h2>

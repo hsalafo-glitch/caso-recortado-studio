@@ -2,74 +2,258 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lista de espera · Caso Recortado Studio</title>
-<meta name="description" content="Escribe un tema y la IA te hace un short animado con voz, subtítulos y 10 estilos. Apúntate para probarlo antes que nadie.">
+{% include "_meta.html" %}
+<meta name="description" content="Escribe un tema y la IA te hace un short animado con guion, voz, subtítulos y 10 estilos. Apúntate a la lista de espera: los primeros tendrán vídeos gratis.">
 <link rel="stylesheet" href="/static/web.css">
 <style>
-  .lista-wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:56px 0}
-  .lista-wrap h1{font-size:clamp(34px,5vw,54px);line-height:1.05;margin:0 0 16px}
-  .lista-wrap .lead{color:var(--suave);font-size:18px;line-height:1.6;margin:0 0 22px}
-  .lista-wrap ul{list-style:none;padding:0;margin:0 0 8px;display:grid;gap:10px}
-  .lista-wrap li{display:flex;gap:10px;align-items:flex-start;color:var(--texto)}
-  .lista-wrap li b{color:var(--acento2)}
-  .demo-video{width:100%;max-width:300px;border-radius:22px;display:block;margin:24px 0 0;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+  /* ── lista de espera: pensada primero para el móvil (llega desde la bio) ── */
+  .le-hero{position:relative;overflow:hidden;padding:36px 0 8px}
+  .le-hero::before{content:"";position:absolute;inset:-260px -200px auto auto;width:720px;height:720px;background:radial-gradient(closest-side,rgba(255,77,90,.20),transparent 70%);pointer-events:none}
+  .le-hero::after{content:"";position:absolute;left:-260px;top:280px;width:600px;height:600px;background:radial-gradient(closest-side,rgba(99,102,241,.16),transparent 70%);pointer-events:none}
+  .le-grid{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:start}
+  .le-grid>*{min-width:0}
+  .le-etiqueta{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--suave);background:var(--card);border:1px solid var(--borde);padding:6px 12px;border-radius:99px}
+  .le-etiqueta i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(52,211,153,.18);animation:latido 2s ease-in-out infinite}
+  @keyframes latido{50%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
+  .le-hero h1{font-size:clamp(36px,6.4vw,62px);line-height:1.02;letter-spacing:-.035em;margin:16px 0 14px;font-weight:800}
+  .le-hero h1 em{font-style:normal;background:linear-gradient(100deg,var(--acento) 10%,var(--acento2) 60%,var(--amarillo));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .le-lead{color:var(--suave);font-size:clamp(16px,1.6vw,19px);line-height:1.6;margin:0 0 22px;max-width:560px}
+  .le-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+  .le-chips span{font-size:13px;font-weight:600;color:var(--texto);background:var(--card2);border:1px solid var(--borde2);border-radius:99px;padding:6px 11px}
+  .le-chips b{color:var(--ok);margin-right:4px}
+
+  /* carrusel de vídeos reales */
+  .le-videos{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:18px 2px 10px;margin:0 -2px;scrollbar-width:none}
+  .le-videos::-webkit-scrollbar{display:none}
+  .le-video{flex:0 0 auto;width:min(44vw,200px);scroll-snap-align:start;margin:0}
+  .le-video .marco{border-radius:26px;padding:7px;background:linear-gradient(160deg,#2a3146,#11141d);box-shadow:var(--sombra),0 0 0 1px rgba(255,255,255,.07) inset}
+  .le-video video{width:100%;aspect-ratio:9/16;display:block;border-radius:20px;background:#000;object-fit:cover}
+  .le-video figcaption{font-size:13px;color:var(--suave);font-weight:600;margin-top:8px;text-align:center}
+  .le-nota{font-size:12px;color:var(--tenue);margin:2px 0 0}
+
+  /* formulario */
+  .le-form{position:sticky;top:84px}
+  .le-form .caja-cuenta{width:100%;max-width:none;margin:0}
+  .le-form h2{font-size:26px;letter-spacing:-.02em;margin:0 0 4px}
+  .le-form .sub{margin:0 0 20px}
+  .le-regalo{display:flex;gap:12px;align-items:flex-start;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.3);border-radius:14px;padding:12px 14px;margin:0 0 18px;font-size:14px;color:var(--texto)}
+  .le-regalo span{font-size:22px;line-height:1}
   .opciones{display:flex;gap:8px;flex-wrap:wrap}
-  .opciones label{border:1px solid var(--borde);border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:14px}
-  .opciones input{margin-right:6px}
-  .contador{color:var(--suave);font-size:14px;margin-top:10px}
-  @media (max-width:820px){.lista-wrap{grid-template-columns:1fr;gap:24px;padding:28px 0}.demo-video{max-width:240px;margin:16px auto 0}}
+  .opciones label{position:relative;border:1px solid var(--borde2);border-radius:999px;padding:9px 16px;cursor:pointer;font-weight:600;font-size:14px;color:var(--suave);background:var(--bg);transition:all .15s}
+  .opciones input{position:absolute;opacity:0;pointer-events:none}
+  .opciones label:has(input:checked){border-color:var(--acento);color:var(--texto);background:rgba(255,77,90,.1)}
+  .opciones label:has(input:focus-visible){outline:2px solid var(--amarillo);outline-offset:2px}
+  .le-privado{display:flex;gap:8px;align-items:center;justify-content:center;color:var(--tenue);font-size:13px;margin:14px 0 0;text-align:center}
+  .le-hecho{text-align:center}
+  .le-hecho .ok-icono{width:64px;height:64px;border-radius:50%;margin:4px auto 14px;display:grid;place-items:center;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.4);font-size:30px;color:var(--ok)}
+  .compartir{display:grid;gap:10px;margin-top:18px}
+
+  /* secciones */
+  .le-sec{padding:64px 0 0}
+  .le-sec h2{font-size:clamp(26px,3.4vw,36px);letter-spacing:-.03em;margin:0 0 8px}
+  .le-sec .intro{color:var(--suave);margin:0 0 24px;max-width:620px}
+  .pasos3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:paso}
+  .pasos3>div{background:var(--card);border:1px solid var(--borde);border-radius:18px;padding:22px}
+  .pasos3>div::before{counter-increment:paso;content:counter(paso);display:grid;place-items:center;width:36px;height:36px;border-radius:11px;font-weight:800;color:var(--acento2);background:linear-gradient(135deg,rgba(255,77,90,.18),rgba(255,138,61,.18));margin-bottom:14px}
+  .pasos3 h3{margin:0 0 6px;font-size:17px}
+  .pasos3 p{margin:0;color:var(--suave);font-size:15px}
+  .incluye6{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .incluye6>div{background:var(--bg2);border:1px solid var(--borde);border-radius:14px;padding:16px;font-size:14px;color:var(--suave)}
+  .incluye6 b{display:block;color:var(--texto);font-size:15px;margin-bottom:3px}
+  .precios-prev{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .precios-prev>div{background:var(--card);border:1px solid var(--borde);border-radius:16px;padding:18px}
+  .precios-prev>div.dest{border-color:var(--acento);background:linear-gradient(180deg,rgba(255,77,90,.08),var(--card) 60%)}
+  .precios-prev h3{margin:0;font-size:15px;color:var(--suave)}
+  .precios-prev .p{font-size:30px;font-weight:800;letter-spacing:-.03em;margin:6px 0 2px}
+  .precios-prev .p small{font-size:14px;color:var(--tenue);font-weight:500}
+  .precios-prev p{margin:0;font-size:14px;color:var(--suave)}
+  .quien{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:linear-gradient(135deg,rgba(255,77,90,.08),rgba(99,102,241,.08));border:1px solid var(--borde);border-radius:20px;padding:22px}
+  .quien img{width:64px;height:64px;border-radius:16px}
+  .quien p{margin:0;color:var(--suave)}
+  .quien a{color:var(--acento2);font-weight:700}
+  .faq{max-width:none}
+  .cta-final{text-align:center;padding:56px 0 24px}
+  .cta-movil{display:none}
+  @media (max-width:900px){
+    .le-grid{grid-template-columns:1fr;gap:28px}
+    .le-form{position:static}
+    .pasos3,.precios-prev{grid-template-columns:1fr}
+    .incluye6{grid-template-columns:1fr 1fr}
+    .le-hero{padding-top:20px}
+    .cta-movil{display:block;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:30;transition:transform .25s,opacity .25s}
+    .cta-movil.oculto{transform:translateY(140%);opacity:0;pointer-events:none}
+    .cta-movil .btn{width:100%;padding:15px;font-size:16px;box-shadow:0 12px 40px -8px rgba(255,77,90,.7)}
+    footer{padding-bottom:96px}
+  }
+  @media (max-width:420px){.incluye6{grid-template-columns:1fr}.quien{grid-template-columns:1fr;text-align:center}.quien img{margin:0 auto}}
 </style>
 </head>
 <body>
 {% include "_cabecera.html" %}
-<main class="contenedor">
-  <div class="lista-wrap">
-    <div>
-      <h1>Escribe un tema.<br>La IA te hace el short.</h1>
-      <p class="lead">Guion, voz, animación y subtítulos en unos minutos, en 10 estilos: papel, 3D, neón, cómic, pixel art…
-        Estamos abriendo poco a poco. Apúntate y te avisamos de los primeros.</p>
-      <ul>
-        <li><b>✓</b>Vídeos verticales listos para TikTok, Reels y Shorts</li>
-        <li><b>✓</b>Revisas y corriges el guion antes de crear el vídeo</li>
-        <li><b>✓</b>Los primeros de la lista, vídeos gratis para probar</li>
-      </ul>
-      <video class="demo-video" src="/static/demo.mp4" poster="/static/demo.jpg" controls muted playsinline preload="none"></video>
-    </div>
-    <div class="caja-cuenta" style="margin:0">
-      {% if hecho %}
-        <h2 style="margin-top:0">¡Apuntado! 🎉</h2>
-        <p class="sub">Te escribiremos cuando abramos. Mientras, puedes ver cómo son los vídeos en nuestro canal.</p>
-      {% else %}
-        <h2 style="margin-top:0">Quiero probarlo</h2>
-        <form method="post">
-          <input type="hidden" name="csrf" value="{{ csrf() }}">
-          <div class="campo">
-            <label for="email">Tu email</label>
-            <input id="email" name="email" type="email" autocomplete="email" required>
-          </div>
-          <div class="campo">
-            <label for="canal">Tu canal o red (opcional)</label>
-            <input id="canal" name="canal" type="text" maxlength="120" placeholder="@tucanal en TikTok, YouTube…">
-          </div>
-          <div class="campo">
-            <label>¿Pagarías unos 10 € al mes por 25 vídeos así?</label>
-            <div class="opciones">
-              <label><input type="radio" name="pagaria" value="si">Sí</label>
-              <label><input type="radio" name="pagaria" value="quiza">Quizá</label>
-              <label><input type="radio" name="pagaria" value="no">No</label>
+<main>
+  <section class="le-hero">
+    <div class="contenedor le-grid">
+      <div>
+        <span class="le-etiqueta"><i></i>Abrimos pronto · lista de espera</span>
+        <h1>Escribe un tema.<br><em>La IA te hace el short.</em></h1>
+        <p class="le-lead">Guion, voz, animación y subtítulos en unos minutos. Tú eliges el estilo, revisas el guion y descargas un
+          vídeo vertical listo para TikTok, Reels y Shorts.</p>
+        <div class="le-chips">
+          <span><b>✓</b>Sin grabar ni editar</span><span><b>✓</b>10 estilos</span><span><b>✓</b>Revisas el guion antes</span>
+        </div>
+        <div class="le-videos" aria-label="Vídeos de ejemplo hechos con la herramienta">
+          {% for v, t in [("humor", "Humor"), ("estilos", "10 estilos"), ("mosaico", "Para creadores"), ("ciencia", "Curiosidades")] %}
+          <figure class="le-video">
+            <div class="marco"><video src="/static/ejemplos/{{ v }}.mp4" poster="/static/ejemplos/{{ v }}.jpg" autoplay muted loop playsinline preload="{{ 'auto' if loop.index < 3 else 'none' }}" aria-label="Ejemplo: {{ t }}"></video></div>
+            <figcaption>{{ t }}</figcaption>
+          </figure>
+          {% endfor %}
+        </div>
+        <p class="le-nota">Vídeos reales hechos con esta herramienta (aquí sin sonido). Desliza para ver más →</p>
+      </div>
+
+      <div class="le-form" id="apuntarse">
+        <div class="caja-cuenta">
+          {% if hecho %}
+          <div class="le-hecho">
+            <div class="ok-icono" aria-hidden="true">✓</div>
+            <h2>¡Ya estás dentro!</h2>
+            <p class="sub">Te escribiremos en cuanto abramos. Como eres de los primeros, tendrás vídeos gratis para probarla.</p>
+            <div class="compartir">
+              <a class="btn btn-primario" href="https://wa.me/?text={{ ('Mira esto: escribes un tema y una IA te hace el short animado ' ~ url_base ~ '/lista-espera') | urlencode }}" target="_blank" rel="noopener">Compartir por WhatsApp</a>
+              <button class="btn btn-sec" type="button" id="copiar">Copiar el enlace</button>
             </div>
           </div>
-          <label class="casilla"><input type="checkbox" name="acepto" value="1" required>
-            <span>Acepto que me escribáis para avisarme de la apertura, según la <a href="/privacidad" target="_blank">política de privacidad</a>. Me puedo dar de baja cuando quiera.</span></label>
-          <button class="btn btn-primario" type="submit">Apuntarme</button>
-          {% if total and total >= 10 %}<p class="contador">Ya somos {{ total }} en la lista.</p>{% endif %}
-        </form>
-      {% endif %}
+          {% else %}
+          <h2>Quiero probarlo</h2>
+          <p class="sub">Apúntate en 10 segundos. Sin tarjeta, sin compromiso.</p>
+          <div class="le-regalo"><span aria-hidden="true">🎁</span><div><b>Los primeros de la lista</b> tendrán vídeos gratis para probarla cuando abramos.</div></div>
+          <form method="post" action="/lista-espera#apuntarse">
+            <input type="hidden" name="csrf" value="{{ csrf() }}">
+            <div class="campo">
+              <label for="email">Tu email</label>
+              <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="tu@email.com">
+            </div>
+            <div class="campo">
+              <label for="canal">Tu canal o red <span style="color:var(--tenue);font-weight:500">(opcional)</span></label>
+              <input id="canal" name="canal" type="text" maxlength="120" placeholder="@tucanal en TikTok, YouTube…">
+            </div>
+            <div class="campo">
+              <label>¿Pagarías unos 10 € al mes por 25 vídeos así?</label>
+              <div class="opciones" role="radiogroup">
+                <label><input type="radio" name="pagaria" value="si">Sí</label>
+                <label><input type="radio" name="pagaria" value="quiza">Quizá</label>
+                <label><input type="radio" name="pagaria" value="no">No</label>
+              </div>
+            </div>
+            <label class="casilla"><input type="checkbox" name="acepto" value="1" required>
+              <span>Acepto que me escribáis para avisarme de la apertura, según la <a href="/privacidad" target="_blank">política de privacidad</a>.</span></label>
+            <button class="btn btn-primario" type="submit" style="width:100%">Apuntarme a la lista</button>
+            <p class="le-privado"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Solo para avisarte. Sin spam. Te das de baja con un email.</p>
+            {% if total and total >= 20 %}<p class="le-privado" style="margin-top:6px">Ya somos {{ total }} en la lista.</p>{% endif %}
+          </form>
+          {% endif %}
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <section class="le-sec">
+    <div class="contenedor">
+      <h2>Así de fácil</h2>
+      <p class="intro">El trabajo de un editor, en un minuto tuyo.</p>
+      <div class="pasos3">
+        <div><h3>Escribe un tema</h3><p>Una curiosidad, un caso real, una situación graciosa… La IA escribe un guion con gancho y ritmo.</p></div>
+        <div><h3>Revisa y elige</h3><p>Lees el guion y lo corriges si quieres. Eliges estilo visual, voz y hasta el aspecto del narrador.</p></div>
+        <div><h3>Descarga y publica</h3><p>Recibes el vídeo, la miniatura, el título y la descripción con hashtags, listos para subir.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="le-sec">
+    <div class="contenedor">
+      <h2>Qué incluye cada vídeo</h2>
+      <p class="intro">Todo lo que necesita un short para funcionar, sin abrir un editor.</p>
+      <div class="incluye6">
+        <div><b>Vídeo vertical</b>1080×1920, hasta 59 segundos</div>
+        <div><b>Voz en off</b>4 voces en español de España</div>
+        <div><b>Subtítulos</b>Palabra a palabra, sincronizados</div>
+        <div><b>10 estilos</b>Papel, 3D, neón, cómic, pixel art…</div>
+        <div><b>Animación</b>Escenas, personaje y transiciones</div>
+        <div><b>Título y descripción</b>Con hashtags, para copiar y pegar</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="le-sec">
+    <div class="contenedor">
+      <h2>Precio previsto</h2>
+      <p class="intro">Empieza gratis. Si te sirve, pasas a un plan. Sin permanencia.</p>
+      <div class="precios-prev">
+        <div><h3>Gratis</h3><div class="p">0 €</div><p>{{ planes.gratis.videos }} vídeos al mes, con marca de agua</p></div>
+        <div class="dest"><h3>Creador</h3><div class="p">{{ planes.creador.precio.split('/')[0] }}<small>/mes</small></div><p>{{ planes.creador.videos }} vídeos al mes, sin marca de agua</p></div>
+        <div><h3>Pro</h3><div class="p">{{ planes.pro.precio.split('/')[0] }}<small>/mes</small></div><p>{{ planes.pro.videos }} vídeos al mes, sin marca de agua</p></div>
+      </div>
+      <p class="le-nota" style="margin-top:10px">Precios previstos para la apertura. Ahora no se cobra nada.</p>
+    </div>
+  </section>
+
+  <section class="le-sec">
+    <div class="contenedor">
+      <div class="quien">
+        <img src="/static/apple-touch-icon.png" alt="" width="64" height="64">
+        <div>
+          <p><b style="color:var(--texto)">¿Quién está detrás?</b> La hace el creador de <a href="https://www.youtube.com/@CasoRecortado" target="_blank" rel="noopener">@CasoRecortado</a>, un canal de shorts animados. Es la misma herramienta con la que hago mis vídeos, y ahora la abro para que tú también puedas usarla.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="le-sec" aria-labelledby="faq-titulo">
+    <div class="contenedor">
+      <h2 id="faq-titulo">Preguntas frecuentes</h2>
+      <div class="faq" style="margin-top:18px">
+        <details><summary>¿Cuándo abrís?</summary><p>Muy pronto. Abriremos por tandas, empezando por la lista de espera. Te avisaremos por email.</p></details>
+        <details><summary>¿Cuánto costará?</summary><p>Habrá un plan gratis con {{ planes.gratis.videos }} vídeos al mes y planes de pago desde {{ planes.creador.precio }}. Los primeros de la lista tendrán vídeos gratis para probarla.</p></details>
+        <details><summary>¿Necesito saber editar vídeo?</summary><p>No. Escribes el tema, eliges el estilo y la voz, revisas el guion si quieres y la IA hace el resto.</p></details>
+        <details><summary>¿Puedo usar los vídeos en mi canal?</summary><p>Sí, también con fines comerciales. Tú decides qué publicas: revisa cada vídeo antes de subirlo (la IA puede equivocarse con algún dato) y cumple las normas de cada plataforma.</p></details>
+        <details><summary>¿Qué hacéis con mi email?</summary><p>Solo lo usamos para avisarte cuando abramos. No lo vendemos ni lo compartimos para publicidad. Si quieres que lo borremos, escríbenos{% if legal.email %} a {{ legal.email }}{% endif %}. Más detalles en la <a href="/privacidad" style="color:var(--acento2)">política de privacidad</a>.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-final">
+    <div class="contenedor">
+      <h2 style="font-size:clamp(26px,3.4vw,36px);letter-spacing:-.03em;margin:0 0 8px">Tu próximo short, en minutos</h2>
+      <p style="color:var(--suave);margin:0 0 20px">Apúntate y sé de los primeros en probarlo.</p>
+      <a class="btn btn-primario" href="#apuntarse">Apuntarme a la lista</a>
+    </div>
+  </section>
 </main>
+{% if not hecho %}<div class="cta-movil" id="cta-movil"><a class="btn btn-primario" href="#apuntarse">Apuntarme gratis</a></div>{% endif %}
 {% include "_pie.html" %}
+<script>
+  // botón fijo en el móvil: se esconde mientras el formulario está a la vista
+  (function () {
+    var cta = document.getElementById("cta-movil"), form = document.getElementById("apuntarse");
+    if (cta && form && "IntersectionObserver" in window) {
+      new IntersectionObserver(function (e) { cta.classList.toggle("oculto", e[0].isIntersecting); }).observe(form);
+    }
+    var b = document.getElementById("copiar");
+    if (b) b.onclick = function () {
+      navigator.clipboard.writeText(location.origin + "/lista-espera").then(function () { b.textContent = "¡Enlace copiado!"; });
+    };
+    // los vídeos solo se reproducen cuando se ven (ahorra datos y batería)
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { var v = e.target; if (e.isIntersecting) { v.play().catch(function () {}); } else { v.pause(); } });
+      }, { threshold: .4 });
+      document.querySelectorAll(".le-video video").forEach(function (v) { io.observe(v); });
+    }
+  })();
+</script>
 <script src="/static/animar.js" defer></script>
 </body>
 </html>

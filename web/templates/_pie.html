@@ -1,6 +1,6 @@
 <footer>
   <div class="contenedor">
-    <div>© 2026 Caso Recortado Studio</div>
-    <div><a href="/#precios">Precios</a><a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/condiciones">Condiciones</a></div>
+    <div>© 2026 Caso Recortado Studio · Hecho en Cataluña{% if legal.email %} · <a href="mailto:{{ legal.email }}" style="margin-left:0">{{ legal.email }}</a>{% endif %}</div>
+    <div>{% if not solo_lista %}<a href="/#precios">Precios</a>{% else %}<a href="/lista-espera">Lista de espera</a>{% endif %}<a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/condiciones">Condiciones</a></div>
   </div>
 </footer>

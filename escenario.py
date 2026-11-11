@@ -112,8 +112,8 @@ def vineta(ctx, fuerza=0.3):
 
 def _estrellas(ctx, pose):
     for i in range(46):
-        x = (i * 397 + 53) % W
-        y = (i * 211 + 97) % 1150
+        x = ((i * 7919) % 1013) / 1013 * W                  # repartidas sin formar líneas
+        y = 40 + ((i * 104729 + 31) % 997) / 997 * 1100
         r = 1.6 + (i * 7) % 4 * 0.9
         a = 0.35 + 0.45 * (0.5 + 0.5 * math.sin(pose / 5 + i))
         ctx.new_path()

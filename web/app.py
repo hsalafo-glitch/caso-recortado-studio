@@ -118,6 +118,7 @@ SIN_CSRF = {"/stripe/webhook"}
 
 # en modo «solo lista» quedan abiertas la lista, lo legal y lo que necesita el administrador para entrar y descargarla
 ABIERTAS_SOLO_LISTA = ("/lista-espera", "/static/", "/aviso-legal", "/privacidad", "/condiciones", "/admin/",
+                       "/robots.txt", "/sitemap.xml",
                        "/entrar", "/salir", "/recuperar", "/registro", "/cuenta")
 
 
@@ -145,11 +146,51 @@ def contexto():
     u = usuario_actual()
     datos = dict(demo=DEMO, usuario=u, planes=db.PLANES, pagos_activos=PAGOS_ACTIVOS, voces=voces.VOCES,
                  narrador=personaje.OPCIONES, narrador_def=personaje.POR_DEFECTO,
-                 solo_lista=SOLO_LISTA, admin=bool(ADMIN and u and u["email"] == ADMIN), legal=LEGAL)
+                 solo_lista=SOLO_LISTA, admin=bool(ADMIN and u and u["email"] == ADMIN), legal=LEGAL, url_base=URL_BASE)
     if u:
         usados, limite = db.uso(con(), u)
         datos.update(usados=usados, limite=limite, plan=db.PLANES.get(u["plan"], db.PLANES["gratis"]))
     return datos
+
+
+@app.after_request
+def cabeceras_seguridad(r):
+    """Cabeceras que dan seguridad sin romper nada (la CSP rompería los scripts en línea: no se pone)."""
+    r.headers.setdefault("X-Content-Type-Options", "nosniff")
+    r.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    r.headers.setdefault("X-Frame-Options", "DENY")
+    r.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+    if URL_BASE.startswith("https"):
+        r.headers.setdefault("Strict-Transport-Security", "max-age=31536000")
+    if request.path.startswith("/static/"):
+        r.headers.setdefault("Cache-Control", "public, max-age=604800")
+    return r
+
+
+@app.errorhandler(404)
+def no_existe(_):
+    return render_template("error.html", codigo=404, titulo="Esta página no existe",
+                           texto="Puede que el enlace esté mal escrito o que la página ya no esté."), 404
+
+
+@app.errorhandler(500)
+def fallo(_):
+    return render_template("error.html", codigo=500, titulo="Algo ha fallado",
+                           texto="Ha sido culpa nuestra. Vuelve a intentarlo en un momento."), 500
+
+
+@app.get("/robots.txt")
+def robots():
+    return ("User-agent: *\nAllow: /lista-espera\nAllow: /$\nDisallow: /api/\nDisallow: /cuenta\nDisallow: /admin/\n"
+            f"Sitemap: {URL_BASE}/sitemap.xml\n"), 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.get("/sitemap.xml")
+def sitemap():
+    paginas = ["/lista-espera", "/privacidad", "/aviso-legal", "/condiciones"] + ([] if SOLO_LISTA else ["/"])
+    xml = "".join(f"<url><loc>{URL_BASE}{p}</loc></url>" for p in paginas)
+    return (f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{xml}</urlset>',
+            200, {"Content-Type": "application/xml"})
 
 
 # ───────────────────────────── páginas ─────────────────────────────

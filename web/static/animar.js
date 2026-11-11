@@ -2,7 +2,7 @@
 (function () {
   if (!("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   document.documentElement.classList.add("js");
-  var sel = ".titulo-sec,.creador,.galeria figure,.tarjeta,.incluye div,.plan,.faq details,.cierre,.lista-wrap > *";
+  var sel = ".titulo-sec,.creador,.galeria figure,.tarjeta,.incluye div,.plan,.faq details,.cierre,.pasos3 > div,.incluye6 > div,.precios-prev > div,.quien";
   var els = document.querySelectorAll(sel);
   var io = new IntersectionObserver(function (es) {
     es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("visto"); io.unobserve(e.target); } });

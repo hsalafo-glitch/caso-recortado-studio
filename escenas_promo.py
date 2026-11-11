@@ -139,7 +139,7 @@ def sc_montaje(p, i):
         for j, v in enumerate(vids):
             fr = clip(v, p.get("inicio", 9), 4, w, h, 0.71)
             x, y = x0 + (j % 3) * (w + gap), y0 + (j // 3) * (h + gap)
-            t = lt - 0.12 * j
+            t = lt + p.get("adelanto", 0) - 0.12 * j          # adelanto: el mosaico ya está montado al empezar
             ang = math.radians((-4, 3, -2, 2, -3, 4, -1, 3, -4)[j])
 
             def d(fr=fr, x=x, y=y, ang=ang, j=j):

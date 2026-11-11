@@ -12,7 +12,7 @@ import math
 import generar_short as G
 from generar_short import INK, P_ell, P_poly, P_rrect, clamp, hexc, line, piece
 
-GESTOS = ["neutro", "saluda", "senala", "piensa", "sorpresa", "celebra", "triste", "explica", "corre"]
+GESTOS = ["neutro", "saluda", "senala", "piensa", "sorpresa", "celebra", "triste", "explica", "corre", "duerme", "enfadado"]
 
 PIEL, CAMISETA, PANTALON, ZAPATO = hexc("#f2c9a0"), hexc("#e63946"), hexc("#2b3a67"), hexc("#1d1f29")
 PELO, MEJILLA, SUELA = hexc("#3b2416"), hexc("#ff8a8a"), hexc("#f4f1ea")
@@ -80,9 +80,46 @@ POSES = {
     "triste":   ((4, 4),               (4, 4),                    "triste",   -2,    9,      0),
     "explica":  ((55, 95),             (55, 95),                  "abierta",  1,     0,      0),
     "corre":    ((40, 80),             (-30, 80),                 "abierta",  1,     6,      0),
+    "duerme":   ((6, 30),              (6, 30),                   "o",        0,     11,     0),
+    "enfadado": ((40, 120),            (40, 120),                 "apretada", 0,     0,      0),
 }
 ENTRA = 0.7      # segundos andando hasta su sitio
 MEZCLA = 0.3     # segundos para pasar del andar al gesto
+
+
+def sofa(ctx, x, pies, s, parte, col="#3f7f8c", ancho=1.0):
+    """Sofá de frente para el personaje (pies en `pies`, escala `s`). parte = «detras» (respaldo) o «delante»
+    (asiento y reposabrazos, que tapan las piernas: parece sentado y hundido en el sofá)."""
+    c = hexc(col)
+    oscuro = tuple(v * 0.78 for v in c[:3])
+    cadera = pies - 120 * s
+    if parte == "detras":
+        piece(ctx, P_rrect(x - 250 * s * ancho, cadera - 175 * s, 500 * s * ancho, 200 * s, 38 * s), oscuro, lw=5)
+        for dx in ((-122, 0, 122) if ancho < 1.3 else (-300, -150, 0, 150, 300)):                                         # cojines del respaldo
+            piece(ctx, P_rrect(x + (dx - 58) * s, cadera - 160 * s, 116 * s, 150 * s, 26 * s), c, lw=4, shadow=False)
+        return
+    if parte == "manta":                                                  # manta a cuadros hasta el pecho
+        top = cadera - 112 * s
+        forma = P_rrect(x - 150 * s, top, 300 * s, 175 * s, 30 * s)
+        piece(ctx, forma, hexc("#e9a23b"), lw=5)
+        ctx.save()
+        ctx.new_path()
+        forma(ctx)
+        ctx.clip()
+        for i in range(-2, 3):
+            line(ctx, [(x + i * 60 * s, top), (x + i * 60 * s, top + 180 * s)], 14 * s, (0.75, 0.32, 0.18, 0.55))
+        for j in range(1, 3):
+            line(ctx, [(x - 160 * s, top + j * 58 * s), (x + 160 * s, top + j * 58 * s)], 14 * s, (0.75, 0.32, 0.18, 0.45))
+        ctx.restore()
+        line(ctx, [(x - 150 * s, top + 6 * s), (x + 150 * s, top + 6 * s)], 8 * s, (1, 0.93, 0.8))   # doblez
+        return
+    piece(ctx, P_rrect(x - 236 * s * ancho, cadera + 2 * s, 472 * s * ancho, 70 * s, 22 * s), c, lw=5)            # asiento
+    line(ctx, [(x, cadera + 10 * s), (x, cadera + 64 * s)], 4 * s, INK)
+    piece(ctx, P_rrect(x - 250 * s * ancho, cadera + 58 * s, 500 * s * ancho, 70 * s, 14 * s), oscuro, lw=5)        # frontal
+    for lado in (-1, 1):                                                                            # reposabrazos
+        piece(ctx, P_rrect(x + lado * 250 * s * ancho - 52 * s, cadera - 70 * s, 104 * s, 196 * s, 40 * s), c, lw=5)
+        piece(ctx, P_rrect(x + lado * 205 * s * ancho - 10 * s, cadera + 126 * s, 20 * s, 28 * s, 6 * s), INK, lw=0, shadow=False,
+              outline=False)                                                                        # patas
 
 
 def _pelo_delante(ctx, cab, cab_r, s, estilo):
@@ -245,7 +282,10 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
     dx = mira * 9 * s
     for lado in (-1, 1):
         ex, ey = cab[0] + lado * 34 * s, cab[1] + 2 * s
-        if parpadeo:
+        if gesto == "duerme" and k > 0.5:                      # ojos cerrados (arco hacia abajo)
+            line(ctx, [(ex - 15 * s, ey - 2 * s), (ex - 6 * s, ey + 5 * s), (ex + 6 * s, ey + 5 * s), (ex + 15 * s, ey - 2 * s)],
+                 6 * s, INK)
+        elif parpadeo:
             line(ctx, [(ex - 13 * s, ey), (ex + 13 * s, ey)], 6 * s, INK)
         else:
             alto = 24 * s if g[2] != "o" else 28 * s
@@ -255,6 +295,8 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
         c = g[3] * k                                        # cejas: + arriba, − caídas, 2 = una levantada
         sube = (12 if c > 0 else 0) * s + (8 * s if (g[3] == 2 and lado == 1) else 0)
         incl = (-8 if g[3] < 0 else (4 if g[3] == 3 else 0)) * s * lado
+        if gesto == "enfadado" and k > 0.5:
+            incl = 11 * s * lado
         line(ctx, [(ex - 16 * s, ey - 30 * s - sube + incl), (ex + 16 * s, ey - 30 * s - sube - incl)], 8 * s, hexc("#24150c"))
     _capa(ctx, "ojos", False)
     _capa(ctx, "barba", True)
@@ -292,12 +334,25 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
     elif boca == "abierta":
         ab = 16 * s if pose % 4 < 2 else 9 * s
         piece(ctx, P_ell(bx, by, 24 * s, ab), hexc("#7a1f2b"), lw=4, shadow=False)
+    elif boca == "apretada":                                # dientes apretados
+        piece(ctx, P_rrect(bx - 26 * s, by - 6 * s, 52 * s, 18 * s, 6 * s), (1, 1, 1), lw=4, shadow=False)
+        line(ctx, [(bx - 22 * s, by + 3 * s), (bx + 22 * s, by + 3 * s)], 3 * s, INK)
     elif boca == "linea":
         line(ctx, [(bx - 16 * s, by + 2 * s), (bx + 16 * s, by - 2 * s)], 7 * s, INK)
     elif boca == "triste":
         line(ctx, [(bx - 22 * s, by + 10 * s), (bx, by), (bx + 22 * s, by + 10 * s)], 7 * s, INK)
     else:
         line(ctx, [(bx - 24 * s, by - 4 * s), (bx, by + 8 * s), (bx + 24 * s, by - 4 * s)], 7 * s, INK)
+    if gesto == "duerme" and k > 0.9:                       # Zzz que suben
+        for i in range(3):
+            fase = ((lt * 0.6) + i / 3) % 1
+            G.draw_text(ctx, "z" if i < 2 else "Z", cab[0] + (90 + 40 * i + 20 * fase) * s, cab[1] - (60 + 110 * fase + 30 * i) * s,
+                        (34 + 14 * i) * s, (1, 1, 1), INK, 6 * s)
+    if gesto == "enfadado" and k > 0.9:                     # venita de enfado
+        vx, vy = cab[0] + cab_r * 0.55, cab[1] - cab_r * 0.55
+        for a in (0.4, 2.0, 3.6, 5.2):
+            line(ctx, [(vx + 8 * s * math.cos(a), vy + 8 * s * math.sin(a)), (vx + 20 * s * math.cos(a + 0.4), vy + 20 * s * math.sin(a + 0.4))],
+                 6 * s, hexc("#e63946"))
     if gesto == "piensa" and k > 0.9:                       # burbujas de pensar
         for i, (px, py, r) in enumerate(((95, -95, 9), (120, -125, 13), (150, -165, 18))):
             if (pose // 4) % 4 >= i:

@@ -260,3 +260,5 @@
   .narrador .segmentos label{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;font-size:13px}
   .muestra{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid rgba(255,255,255,.35);flex:none}
   @media (max-width:640px){.narrador{grid-template-columns:1fr;justify-items:center}.narrador-opciones{width:100%}}
+  .error-codigo{font-size:64px;font-weight:800;letter-spacing:-.04em;background:linear-gradient(100deg,var(--acento),var(--acento2));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+  footer a{white-space:nowrap;display:inline-block;margin-bottom:4px}

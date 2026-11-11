@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ titulo }} · Caso Recortado Studio</title>
+{% include "_meta.html" %}
+<link rel="stylesheet" href="/static/web.css">
+</head>
+<body>
+{% include "_cabecera.html" %}
+<main class="contenedor pantalla-cuenta">
+  <div class="caja-cuenta" style="text-align:center">
+    <div class="error-codigo">{{ codigo }}</div>
+    <h1>{{ titulo }}</h1>
+    <p class="sub">{{ texto }}</p>
+    <a class="btn btn-primario" href="{{ '/lista-espera' if solo_lista else '/' }}">Volver al inicio</a>
+  </div>
+</main>
+{% include "_pie.html" %}
+</body>
+</html>

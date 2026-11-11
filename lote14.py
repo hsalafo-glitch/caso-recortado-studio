@@ -358,7 +358,15 @@ def sc_personaje(p, i):
         x = 330 if con_ico else 540
         if con_ico:
             _ico(ctx, p, p["ico"], 800, 940, 1.2, lt - PJ.ENTRA - 0.15, lt, pose, 1)
-        PJ.dibujar(ctx, x, 1318, 1.5, p.get("gesto", "explica"), lt, pose, mira=1 if con_ico else 0)
+        if p.get("sofa"):                                   # sentado en el sofá: no entra andando
+            PJ.sofa(ctx, x, 1318, 1.5, "detras")
+            PJ.dibujar(ctx, x, 1318, 1.5, p.get("gesto", "explica"), max(lt + PJ.ENTRA + p.get("ya", 0.3), 0), pose,
+                       mira=1 if con_ico else 0)
+            PJ.sofa(ctx, x, 1318, 1.5, "delante")
+            if p.get("manta"):
+                PJ.sofa(ctx, x, 1318, 1.5, "manta")
+        else:
+            PJ.dibujar(ctx, x, 1318, 1.5, p.get("gesto", "explica"), lt, pose, mira=1 if con_ico else 0)
         if p.get("bocadillo"):
             _bocadillo(ctx, p["bocadillo"], 540 if not con_ico else 560, 585, lt - PJ.ENTRA - 0.2, x + 70)
         _stamp(ctx, ev, lt, p.get("st"), 1265 if p.get("bocadillo") else 600)
