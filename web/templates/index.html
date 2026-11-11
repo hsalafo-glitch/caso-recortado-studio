@@ -15,7 +15,7 @@
 <header class="hero">
   <div class="contenedor">
     <div>
-      <span class="pildora"><b>●</b> Nuevo: 10 estilos de animación</span>
+      <span class="pildora"><b>●</b> Nuevo: diseña tu propio narrador</span>
       <h1>De una idea a un <em>short animado</em> en minutos</h1>
       <p class="lead">Escribe un tema y la IA escribe el guion, pone la voz, anima las escenas y añade subtítulos. Recibes un vídeo vertical listo para TikTok, Reels y YouTube Shorts.</p>
       <div class="cta">
@@ -30,7 +30,7 @@
     </div>
     <div style="position:relative;justify-self:center">
       <div class="movil">
-        <video src="/static/demo.mp4" poster="/static/demo.jpg" autoplay muted loop playsinline aria-label="Ejemplo: el mismo short en 10 estilos"></video>
+        <video src="/static/ejemplos/humor.mp4" poster="/static/ejemplos/humor.jpg" autoplay muted loop playsinline aria-label="Ejemplo real hecho con la herramienta"></video>
       </div>
       <div class="etiqueta-flot a"><span class="punto"></span>Guion escrito por IA</div>
       <div class="etiqueta-flot b">🎙️ Voz + subtítulos</div>
@@ -154,6 +154,26 @@
   </div>
 </section>
 
+<section id="ejemplos" aria-labelledby="ejemplos-titulo">
+  <div class="contenedor">
+    <div class="titulo-sec">
+      <small>Ejemplos reales</small>
+      <h2 id="ejemplos-titulo">Hechos con esta herramienta</h2>
+      <p>Sin grabar, sin editar. Un tema, un estilo y listo.</p>
+    </div>
+    <div class="ejemplos-fila">
+      {% for v, t in [("humor", "Humor de pareja"), ("estilos", "10 estilos"), ("mosaico", "Para creadores"), ("ciencia", "Curiosidades")] %}
+      <figure><div class="marco"><video src="/static/ejemplos/{{ v }}.mp4" poster="/static/ejemplos/{{ v }}.jpg" muted loop playsinline preload="none" aria-label="Ejemplo: {{ t }}"></video></div><figcaption>{{ t }}</figcaption></figure>
+      {% endfor %}
+    </div>
+    <div class="quien-ix">
+      <img src="/static/apple-touch-icon.png" alt="" width="56" height="56">
+      <p><b>¿Quién está detrás?</b> La hace el creador de <a href="https://www.youtube.com/@CasoRecortado" target="_blank" rel="noopener">@CasoRecortado</a>,
+        un canal de shorts animados. Es la misma herramienta con la que hago mis vídeos.</p>
+    </div>
+  </div>
+</section>
+
 <section id="estilos" aria-labelledby="estilos-titulo" style="background:var(--bg2);border-block:1px solid var(--borde)">
   <div class="contenedor">
     <div class="titulo-sec">
@@ -237,7 +257,7 @@
         {% else %}<button class="btn btn-sec" type="button" disabled>Próximamente</button>{% endif %}
       </div>
     </div>
-    <p class="nota-precios">Pago seguro con Stripe. Los vídeos que fallan no cuentan.</p>
+    <p class="nota-precios">{% if pagos_activos %}Pago seguro con Stripe. {% endif %}Sin permanencia. Los vídeos que fallan no cuentan.</p>
   </div>
 </section>
 
@@ -452,6 +472,11 @@ async function descartar(id) {
 }
 
 cargar();
+// los ejemplos solo se reproducen cuando se ven (ahorra datos)
+if ("IntersectionObserver" in window) {
+  const ioV = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause()), {threshold: .4});
+  document.querySelectorAll(".ejemplos-fila video").forEach(v => ioV.observe(v));
+}
 // solo se refresca mientras hay algo en marcha (y nunca con un guion abierto), para no cortar lo que se está viendo
 setInterval(() => {
   if (document.querySelector(".editor-guion:not([hidden])")) return;

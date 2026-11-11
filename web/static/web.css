@@ -202,7 +202,7 @@
   .uso .barra{width:140px}
   .uso b{color:var(--texto)}
   .uso a{color:var(--acento2);font-weight:700;text-decoration:none}
-  .pantalla-cuenta{min-height:calc(100vh - 64px);display:grid;place-items:center;padding:48px 0}
+  .pantalla-cuenta{min-height:calc(100vh - 64px);display:grid;place-items:center;padding-block:48px}
   .caja-cuenta{width:min(440px,100%);background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--borde);border-radius:24px;padding:32px;box-shadow:var(--sombra)}
   .caja-cuenta h1{font-size:30px;margin:0 0 6px}
   .caja-cuenta p.sub{color:var(--suave);margin:0 0 24px}
@@ -262,3 +262,19 @@
   @media (max-width:640px){.narrador{grid-template-columns:1fr;justify-items:center}.narrador-opciones{width:100%}}
   .error-codigo{font-size:64px;font-weight:800;letter-spacing:-.04em;background:linear-gradient(100deg,var(--acento),var(--acento2));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
   footer a{white-space:nowrap;display:inline-block;margin-bottom:4px}
+  .caja-cuenta,.caja-cuenta *{box-sizing:border-box}
+  @media (max-width:520px){.pantalla-cuenta{padding-block:24px}.caja-cuenta{padding:24px 20px;border-radius:20px}}
+
+  /* ── portada: ejemplos reales y quién está detrás ── */
+  .narrador[hidden]{display:none!important}
+  .ejemplos-fila{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .ejemplos-fila figure{margin:0}
+  .ejemplos-fila .marco{border-radius:26px;padding:7px;background:linear-gradient(160deg,#2a3146,#11141d);box-shadow:var(--sombra),0 0 0 1px rgba(255,255,255,.07) inset}
+  .ejemplos-fila video{width:100%;aspect-ratio:9/16;display:block;border-radius:20px;background:#000;object-fit:cover}
+  .ejemplos-fila figcaption{text-align:center;color:var(--suave);font-weight:600;font-size:14px;margin-top:10px}
+  .quien-ix{display:flex;gap:16px;align-items:center;max-width:760px;margin:32px auto 0;background:linear-gradient(135deg,rgba(255,77,90,.08),rgba(99,102,241,.08));border:1px solid var(--borde);border-radius:18px;padding:18px 20px}
+  .quien-ix img{border-radius:14px;flex:none}
+  .quien-ix p{margin:0;color:var(--suave)}
+  .quien-ix b{color:var(--texto)}
+  .quien-ix a{color:var(--acento2);font-weight:700}
+  @media (max-width:820px){.ejemplos-fila{grid-template-columns:repeat(4,64vw);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px}.ejemplos-fila figure{scroll-snap-align:start}}
