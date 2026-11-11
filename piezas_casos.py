@@ -16,23 +16,18 @@ def fondo(ctx, col="#2d3557", suelo=1320, col_suelo="#1d2440"):
     if _g.ESTILO != "recortes":
         import estilos
         return estilos.fondo(ctx, col, suelo, col_suelo)
-    set_col(ctx, hexc(col))
-    ctx.paint()
-    if suelo is not None:
-        piece(ctx, P_rect(-10, suelo, 1100, 1960 - suelo), hexc(col_suelo), lw=4, shadow=False)
+    import escenario                      # fondo de estudio: degradado, luz, profundidad y suelo sin raya
+    escenario.estudio(ctx, hexc(col), suelo)
 
 
 def noche(ctx, pose, suelo=None):
     if _g.ESTILO != "recortes":
         import estilos
         return estilos.fondo(ctx, "#141a33", suelo, "#0c1024", noche=True, pose=pose)
-    set_col(ctx, hexc("#141a33"))
-    ctx.paint()
-    stars(ctx, 40, 5, 1300, pose)
+    import escenario
+    escenario.estudio(ctx, hexc("#1b2346"), suelo, pose, noche=True, intensidad=0.8)
     piece(ctx, P_ell(860, 620, 70), hexc("#f3e6b0"), lw=4)
-    piece(ctx, P_ell(888, 600, 60), hexc("#141a33"), lw=0, shadow=False, outline=False)
-    if suelo is not None:
-        piece(ctx, P_rect(-10, suelo, 1100, 1960 - suelo), hexc("#0c1024"), lw=4, shadow=False)
+    piece(ctx, P_ell(888, 600, 60), hexc("#1d2549"), lw=0, shadow=False, outline=False)
 
 
 def silueta(ctx, x, feet, s, pose=0, k=0, tilt=None):

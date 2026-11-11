@@ -356,16 +356,20 @@ def fondo(ctx, col, suelo, col_suelo, noche=False, pose=0):
             ctx.rectangle(0, suelo, W, H - suelo); ctx.fill()
         return
     if e == "comic":
+        import escenario
         c = _claro(g.hexc("#2b3a67") if noche else base, 0.15)
-        _set(ctx, c); ctx.paint()
+        escenario.estudio(ctx, c, None, pose, oscuro_abajo=False)
         ctx.set_source_rgba(*_claro(c, 0.3)[:3], 0.5)          # trama de fondo
         for y in range(0, (suelo or H), 26):
             for x in range((y // 26) % 2 * 13, W, 26):
                 ctx.new_sub_path(); ctx.arc(x, y, 4, 0, 2 * math.pi)
         ctx.fill()
-        if suelo is not None:
-            _set(ctx, g.hexc(col_suelo)); ctx.rectangle(0, suelo, W, H - suelo); ctx.fill()
-            ctx.set_source_rgb(0.05, 0.05, 0.08); ctx.set_line_width(10); ctx.move_to(0, suelo); ctx.line_to(W, suelo); ctx.stroke()
+        if suelo is not None:                                  # suelo de viñeta, sin la raya negra
+            s_ = g.hexc(col_suelo)
+            gr = cairo.LinearGradient(0, suelo - 140, 0, suelo + 80)
+            gr.add_color_stop_rgba(0, *s_[:3], 0); gr.add_color_stop_rgba(1, *s_[:3], 0.9)
+            ctx.set_source(gr); ctx.rectangle(0, suelo - 140, W, H - suelo + 140); ctx.fill()
+            escenario.vineta(ctx, 0.25)
         return
     if e == "palitos":
         ctx.set_source_rgb(0.97, 0.965, 0.94)
@@ -400,48 +404,27 @@ def fondo(ctx, col, suelo, col_suelo, noche=False, pose=0):
         ctx.stroke()
         if noche:
             g.stars(ctx, 40, 5, 1300, pose)
-        if suelo is not None:
-            ctx.set_source_rgb(0.02, 0.02, 0.05)
-            ctx.rectangle(0, suelo, W, H - suelo)
-            ctx.fill()
-            line(ctx, [(0, suelo), (W, suelo)], 5, _claro(base, 0.3))
+        if suelo is not None:                                  # suelo oscuro con reflejo de luz, sin raya
+            gr = cairo.LinearGradient(0, suelo - 120, 0, suelo + 60)
+            gr.add_color_stop_rgba(0, 0.02, 0.02, 0.05, 0); gr.add_color_stop_rgba(1, 0.02, 0.02, 0.05, 0.95)
+            ctx.set_source(gr); ctx.rectangle(0, suelo - 120, W, H - suelo + 120); ctx.fill()
+            c = _claro(base, 0.3)
+            ctx.save(); ctx.translate(W / 2, suelo); ctx.scale(1, 0.05)
+            gr = cairo.RadialGradient(0, 0, 10, 0, 0, 520)
+            gr.add_color_stop_rgba(0, c[0], c[1], c[2], 0.6); gr.add_color_stop_rgba(1, c[0], c[1], c[2], 0)
+            ctx.arc(0, 0, 520, 0, 2 * math.pi); ctx.set_source(gr); ctx.fill(); ctx.restore()
         return
     if noche:
         base = g.hexc("#141a33")
     if e in ("3d", "plastilina"):
+        import escenario
         if e == "plastilina":
             base = _claro(base, 0.12)
-        gr = cairo.LinearGradient(0, 0, 0, suelo or H)
-        gr.add_color_stop_rgba(0, *_claro(base, 0.22))
-        gr.add_color_stop_rgba(1, *_oscuro(base, 0.18))
-        ctx.set_source(gr)
-        ctx.paint()
-        if noche:
-            g.stars(ctx, 40, 5, 1300, pose)
-        if suelo is not None:
-            s = g.hexc(col_suelo)
-            gr = cairo.LinearGradient(0, suelo, 0, H)
-            gr.add_color_stop_rgba(0, *_claro(s, 0.15))
-            gr.add_color_stop_rgba(1, *_oscuro(s, 0.35))
-            ctx.set_source(gr)
-            ctx.rectangle(0, suelo, W, H - suelo)
-            ctx.fill()
-            gr = cairo.LinearGradient(0, suelo - 60, 0, suelo)       # sombra de contacto en el horizonte
-            gr.add_color_stop_rgba(0, 0, 0, 0, 0)
-            gr.add_color_stop_rgba(1, 0, 0, 0, 0.18)
-            ctx.set_source(gr)
-            ctx.rectangle(0, suelo - 60, W, 60)
-            ctx.fill()
+        escenario.estudio(ctx, base, suelo, pose, noche=noche, intensidad=1.15)
         return
-    # plano
-    _set(ctx, base)
-    ctx.paint()
-    if noche:
-        g.stars(ctx, 40, 5, 1300, pose)
-    if suelo is not None:
-        _set(ctx, g.hexc(col_suelo) if not noche else g.hexc("#0c1024"))
-        ctx.rectangle(0, suelo, W, H - suelo)
-        ctx.fill()
+    # plano: el mismo estudio, más suave (estilo motion graphics)
+    import escenario
+    escenario.estudio(ctx, base, suelo, pose, noche=noche, intensidad=0.75)
 
 
 # ───────────────────────────── personas ─────────────────────────────

@@ -9,11 +9,33 @@ visual activo (papel, palitos, 3D, neón...).
 """
 import math
 
-from generar_short import INK, P_ell, P_rrect, clamp, hexc, line, piece
+import generar_short as G
+from generar_short import INK, P_ell, P_poly, P_rrect, clamp, hexc, line, piece
 
 GESTOS = ["neutro", "saluda", "senala", "piensa", "sorpresa", "celebra", "triste", "explica", "corre"]
 
 PIEL, CAMISETA, PANTALON, ZAPATO = hexc("#f2c9a0"), hexc("#e63946"), hexc("#2b3a67"), hexc("#1d1f29")
+PELO, MEJILLA, SUELA = hexc("#3b2416"), hexc("#ff8a8a"), hexc("#f4f1ea")
+SIN_VOLUMEN = ("palitos", "neon", "holograma", "pixel")    # estilos de línea: sin sombreado ni rubor
+
+
+def _volumen(ctx, camino, lado=1, fuerza=0.16, ancho=0.4, x0=None, w=None):
+    """Sombra de volumen (luz desde arriba a la izquierda): oscurece el lado derecho de una forma."""
+    if G.ESTILO in SIN_VOLUMEN:
+        return
+    ctx.save()
+    ctx.new_path()
+    camino(ctx)
+    ctx.clip()
+    x1, y1, x2, y2 = ctx.clip_extents()
+    ctx.new_path()
+    if lado > 0:
+        ctx.rectangle(x2 - (x2 - x1) * ancho, y1, (x2 - x1) * ancho, y2 - y1)
+    else:
+        ctx.rectangle(x1, y1, (x2 - x1) * ancho, y2 - y1)
+    ctx.set_source_rgba(0.05, 0.03, 0.12, fuerza)
+    ctx.fill()
+    ctx.restore()
 
 # ángulos en grados desde «colgando hacia abajo»; positivo = hacia fuera del cuerpo y hacia arriba
 #            brazo izq (hombro, codo)  brazo der (hombro, codo)   boca        cejas  cabeza  salto
@@ -73,12 +95,19 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
     cab_r = 92 * s
     cab = (x + g[4] * 0.6 * s * k, hombro_y - cab_r * 0.78)
 
+    # sombra en el suelo (más pequeña y suave cuanto más alto salta)
+    import escenario
+    alto = max(0.0, pies - y0 - 3 * s)
+    escenario.sombra_contacto(ctx, x + 6 * s, pies + 4 * s, 120 * s * (1 - min(0.5, alto / (300 * s))),
+                              0.30 * (1 - min(0.6, alto / (200 * s))))
     # piernas (detrás del cuerpo)
     for lado, fase in ((-1, 1), (1, -1)):
         a = lado * 6 * (1 - mov) + fase * paso * (34 if corre else 24) * mov      # al andar, las dos van adelante/atrás
         rod = max(0.0, -fase * paso) * (60 if corre else 30) * mov
         fin = _miembro(ctx, (x + lado * 30 * s, cadera_y), alto_pierna * 0.5, alto_pierna * 0.5, a, -rod, 1, 26 * s, PANTALON)
-        piece(ctx, P_ell(fin[0] + 10 * s, fin[1], 26 * s, 14 * s), ZAPATO, lw=3, shadow=False)
+        zx, zy = fin[0] + 12 * s, fin[1]
+        piece(ctx, P_rrect(zx - 30 * s, zy - 15 * s, 62 * s, 26 * s, 13 * s), ZAPATO, lw=3, shadow=False)
+        line(ctx, [(zx - 22 * s, zy + 6 * s), (zx + 24 * s, zy + 6 * s)], 4 * s, SUELA)   # suela
 
     # brazo izquierdo (detrás)
     def brazo(lado, ang):
@@ -95,15 +124,37 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
 
     brazo(-1, g[0])
     # cuerpo
-    piece(ctx, P_rrect(x - 72 * s, hombro_y - 8 * s, 144 * s, torso, 44 * s), CAMISETA, lw=5)
-    piece(ctx, P_rrect(x - 66 * s, cadera_y - 34 * s, 132 * s, 52 * s, 20 * s), PANTALON, lw=4, shadow=False)
+    tronco = P_rrect(x - 72 * s, hombro_y - 8 * s, 144 * s, torso, 44 * s)
+    piece(ctx, tronco, CAMISETA, lw=5)
+    _volumen(ctx, tronco, 1, 0.18, 0.32)
+    piece(ctx, P_rrect(x - 62 * s, cadera_y - 16 * s, 124 * s, 36 * s, 14 * s), PANTALON, lw=4, shadow=False)
+    line(ctx, [(x - 56 * s, cadera_y - 8 * s), (x + 56 * s, cadera_y - 8 * s)], 6 * s, hexc("#1a2140"))   # cinturón
+    piece(ctx, P_rrect(x - 9 * s, cadera_y - 14 * s, 18 * s, 13 * s, 3 * s), hexc("#d9b44a"), lw=2, shadow=False)  # hebilla
+    # cuello: piel en V con el borde de la camiseta
+    piece(ctx, P_poly([(x - 30 * s, hombro_y - 6 * s), (x + 30 * s, hombro_y - 6 * s), (x, hombro_y + 30 * s)]), PIEL, lw=4, shadow=False)
+    if G.ESTILO not in SIN_VOLUMEN:
+        line(ctx, [(x - 34 * s, hombro_y - 8 * s), (x, hombro_y + 34 * s), (x + 34 * s, hombro_y - 8 * s)], 7 * s,
+             tuple(c * 0.78 for c in CAMISETA[:3]))
     mano = brazo(1, g[1])
     if gesto == "senala" and k > 0.9:                       # dedo índice
         line(ctx, [mano, (mano[0] + 30 * s, mano[1] - 4 * s)], 9 * s, INK)
 
-    # cabeza
-    piece(ctx, P_ell(cab[0], cab[1], cab_r, cab_r * 0.95), PIEL, lw=5)
-    piece(ctx, P_ell(cab[0] - 6 * s, cab[1] - cab_r * 0.62, cab_r * 0.86, cab_r * 0.42), hexc("#4a2f1d"), lw=4, shadow=False)   # pelo
+    # cabeza: orejas, cara con volumen, pelo con flequillo
+    for lado in (-1, 1):
+        piece(ctx, P_ell(cab[0] + lado * cab_r * 0.96, cab[1] + 8 * s, 17 * s, 24 * s), PIEL, lw=4, shadow=False)
+    cara = P_ell(cab[0], cab[1], cab_r, cab_r * 0.95)
+    piece(ctx, cara, PIEL, lw=5)
+    _volumen(ctx, cara, 1, 0.13, 0.3)
+    px, py = cab[0] - 4 * s, cab[1] - cab_r * 0.55
+    pelo = [(px - cab_r * 0.95, py + 34 * s), (px - cab_r * 0.98, py - 6 * s), (px - cab_r * 0.7, py - 46 * s),
+            (px - cab_r * 0.2, py - 62 * s), (px + cab_r * 0.45, py - 58 * s), (px + cab_r * 0.88, py - 28 * s),
+            (px + cab_r * 0.98, py + 22 * s), (px + cab_r * 0.72, py + 12 * s),               # lado derecho
+            (px + cab_r * 0.48, py + 16 * s), (px + cab_r * 0.30, py - 2 * s),                # flequillo (mechones)
+            (px + cab_r * 0.05, py + 18 * s), (px - cab_r * 0.18, py - 2 * s),
+            (px - cab_r * 0.45, py + 20 * s), (px - cab_r * 0.62, py + 2 * s), (px - cab_r * 0.82, py + 26 * s)]
+    piece(ctx, P_poly(pelo), PELO, lw=4, shadow=False)
+    if G.ESTILO not in SIN_VOLUMEN:                          # brillo del pelo
+        line(ctx, [(px - cab_r * 0.45, py - 30 * s), (px - cab_r * 0.05, py - 44 * s)], 7 * s, (1, 1, 1, 0.25))
     parpadeo = pose % 34 in (0, 1)
     dx = mira * 9 * s
     for lado in (-1, 1):
@@ -113,11 +164,18 @@ def dibujar(ctx, x, pies, s, gesto="neutro", lt=9.0, pose=0, mira=0, desde=-1):
         else:
             alto = 24 * s if g[2] != "o" else 28 * s
             piece(ctx, P_ell(ex, ey, 15 * s, alto), (1, 1, 1), lw=3, shadow=False)
-            piece(ctx, P_ell(ex + dx, ey + 3 * s, 7 * s, 11 * s), INK, lw=0, shadow=False, outline=False)
+            piece(ctx, P_ell(ex + dx, ey + 3 * s, 8 * s, 12 * s), INK, lw=0, shadow=False, outline=False)
+            piece(ctx, P_ell(ex + dx + 3 * s, ey - 2 * s, 3 * s, 3.5 * s), (1, 1, 1), lw=0, shadow=False, outline=False)
         c = g[3] * k                                        # cejas: + arriba, − caídas, 2 = una levantada
         sube = (12 if c > 0 else 0) * s + (8 * s if (g[3] == 2 and lado == 1) else 0)
         incl = (-8 if g[3] < 0 else (4 if g[3] == 3 else 0)) * s * lado
-        line(ctx, [(ex - 16 * s, ey - 38 * s - sube + incl), (ex + 16 * s, ey - 38 * s - sube - incl)], 7 * s, hexc("#4a2f1d"))
+        line(ctx, [(ex - 16 * s, ey - 30 * s - sube + incl), (ex + 16 * s, ey - 30 * s - sube - incl)], 8 * s, hexc("#24150c"))
+    if G.ESTILO not in SIN_VOLUMEN:                          # mejillas y nariz
+        for lado in (-1, 1):
+            piece(ctx, P_ell(cab[0] + lado * 58 * s, cab[1] + 34 * s, 16 * s, 9 * s), (*MEJILLA[:3], 0.45), lw=0,
+                  shadow=False, outline=False)
+        line(ctx, [(cab[0] + 2 * s + dx * 0.4, cab[1] + 14 * s), (cab[0] + 8 * s + dx * 0.4, cab[1] + 26 * s),
+                   (cab[0] + dx * 0.4, cab[1] + 28 * s)], 4 * s, (0.55, 0.3, 0.2, 0.7))
     bx, by = cab[0] + dx * 0.4, cab[1] + 46 * s
     boca = g[2] if k > 0.5 else "sonrisa"
     if boca == "o":
