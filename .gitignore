@@ -7,3 +7,5 @@ cache_audio/
 web/casos/
 web/generados/
 web/logs/
+canal_gta6/clips/*
+!canal_gta6/clips/.gitkeep
